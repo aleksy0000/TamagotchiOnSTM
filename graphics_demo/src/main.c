@@ -42,7 +42,7 @@ int main()
 	initClock();
 	initSysTick();
 	setupIO();
-	putImage(20,80,12,16,dg1,0,0);
+	putImage(20,80,16,16,dg1,0,0);
 	while(1)
 	{
 		hmoved = vmoved = 0;
@@ -87,24 +87,24 @@ int main()
 		if ((vmoved) || (hmoved))
 		{
 			// only redraw if there has been some movement (reduces flicker)
-			fillRectangle(oldx,oldy,12,16,0);
+			fillRectangle(oldx,oldy,32,32,0);
 			oldx = x;
 			oldy = y;					
 			if (hmoved)
 			{
 				if (toggle)
-					putImage(x,y,12,16,deco1,hinverted,0);
+					putImage(x,y,48,48,deco1,hinverted,0);
 				else
-					putImage(x,y,12,16,deco2,hinverted,0);
+					putImage(x,y,48,48,deco2,hinverted,0);
 				
 				toggle = toggle ^ 1;
 			}
 			else
 			{
-				putImage(x,y,12,16,deco3,0,vinverted);
+				putImage(x,y,48,48,deco3,0,vinverted);
 			}
 			// Now check for an overlap by checking to see if ANY of the 4 corners of deco are within the target area
-			if (isInside(20,80,12,16,x,y) || isInside(20,80,12,16,x+12,y) || isInside(20,80,12,16,x,y+16) || isInside(20,80,12,16,x+12,y+16) )
+			if (isInside(20,80,16,16,x,y) || isInside(20,80,16,16,x+12,y) || isInside(20,80,16,16,x,y+16) || isInside(20,80,16,16,x+12,y+16) )
 			{
 				printTextX2("GLUG!", 10, 20, RGBToWord(0xff,0xff,0), 0);
 			}
