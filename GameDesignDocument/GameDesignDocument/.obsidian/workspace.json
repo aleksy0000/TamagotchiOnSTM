@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Timeline of Events.md",
+                "file": "GameDesignDocument.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -28,7 +28,7 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "Timeline of Events"
+              "title": "GameDesignDocument"
             }
           }
         ]
@@ -74,13 +74,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Timeline of Events.md",
+                "file": "GameDesignDocument.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Timeline of Events"
+              "title": "Outline of GameDesignDocument"
             }
           },
           {
@@ -157,8 +157,8 @@
   },
   "active": "e7a7b303c61786dc",
   "lastOpenFiles": [
-    "GameDesignDocument.md",
     "Timeline of Events.md",
+    "GameDesignDocument.md",
     "Welcome.md",
     "College/Modules/Microprocessors Systems/Project.md",
     "Home Page/Home.canvas",
