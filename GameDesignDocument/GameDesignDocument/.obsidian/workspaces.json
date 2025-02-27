@@ -43,11 +43,11 @@
         "type": "split",
         "children": [
           {
-            "id": "ff031eabd63b1eba",
+            "id": "8cc61a64879e84f5",
             "type": "tabs",
             "children": [
               {
-                "id": "3bd19bba09e6f6f0",
+                "id": "c30b5e57a1f79ab5",
                 "type": "leaf",
                 "state": {
                   "type": "file-tree-view",
@@ -157,8 +157,8 @@
           "smart-random-note:Open Random Note from Search": false
         }
       },
-      "active": "3bd19bba09e6f6f0",
-      "mtime": "2025-02-27T11:36:59+00:00"
+      "active": "c30b5e57a1f79ab5",
+      "mtime": "2025-02-27T11:42:41+00:00"
     }
   },
   "active": "Workhorse"

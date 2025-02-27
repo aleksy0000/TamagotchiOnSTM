@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "GameDesignDocument.md",
+                "file": "Timeline of Events.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -28,7 +28,7 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "GameDesignDocument"
+              "title": "Timeline of Events"
             }
           }
         ]
@@ -41,11 +41,11 @@
     "type": "split",
     "children": [
       {
-        "id": "ff031eabd63b1eba",
+        "id": "8cc61a64879e84f5",
         "type": "tabs",
         "children": [
           {
-            "id": "3bd19bba09e6f6f0",
+            "id": "c30b5e57a1f79ab5",
             "type": "leaf",
             "state": {
               "type": "file-tree-view",
@@ -74,13 +74,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "GameDesignDocument.md",
+                "file": "Timeline of Events.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of GameDesignDocument"
+              "title": "Outline of Timeline of Events"
             }
           },
           {
@@ -155,10 +155,11 @@
       "smart-random-note:Open Random Note from Search": false
     }
   },
-  "active": "3bd19bba09e6f6f0",
+  "active": "e7a7b303c61786dc",
   "lastOpenFiles": [
-    "Welcome.md",
     "GameDesignDocument.md",
+    "Timeline of Events.md",
+    "Welcome.md",
     "College/Modules/Microprocessors Systems/Project.md",
     "Home Page/Home.canvas",
     "College/Modules/Programming/Arrays - C.md",
@@ -183,7 +184,6 @@
     "College/Modules/Programming/Variable Naming Schemes.md",
     "College/Modules/Programming/Unsorted/Symbolic Names - Cc.md",
     "College/Modules/Programming/Symbolic Names - C.md",
-    "College/Modules/Programming/Unsorted/Subscript and Pointer Notation - C.md",
     "College/Modules/Programming/Unsorted",
     "College/Modules",
     "College/TU856-1/Exam Papers/CMPU 1006 - 2023.2024.pdf",
