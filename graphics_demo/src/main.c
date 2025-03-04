@@ -38,6 +38,7 @@ int main()
 	int hmoved = 0;
 	int vmoved = 0;
 	int hunger = 100;
+	int isDead;
 	uint16_t x = 50;
 	uint16_t y = 80;
 	uint16_t oldx = x;
@@ -114,6 +115,17 @@ int main()
 				delay(100);
 				putImage(x,y,16,16,spudmanIdle2,hinverted,0);
 				delay(100);
+			}
+		}
+		if(random_mvmt || 1 || 2 || 3 || 4) // if spud is moved hunger bar decreases 
+		{
+			hunger = hunger - 1;
+			printNumberX2(hunger,80,20,0,1);
+			
+			if (hunger == 0 && !isDead)
+			{
+				printTextX2("Spuddy has starved to death",64,20,0,1);
+				isDead = 1;
 			}
 		}
 		
