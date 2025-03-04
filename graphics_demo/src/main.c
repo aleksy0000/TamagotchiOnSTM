@@ -60,7 +60,8 @@ int main()
 		{					
 			if (x < 110)
 			{
-				x = x + 1;
+				//x = x + 1;
+				x = random_mvmt_duration;
 				hmoved = random_mvmt_duration;
 				hinverted=0;
 			}						
@@ -70,7 +71,8 @@ int main()
 			
 			if (x > 10)
 			{
-				x = x - 1;
+				//x = x - 1;
+				x = random_mvmt_duration;
 				hmoved = random_mvmt_duration;
 				hinverted=1;
 			}			
@@ -79,7 +81,8 @@ int main()
 		{
 			if (y < 140)
 			{
-				y = y + 1;			
+				//y = y + 1;	
+				y = random_mvmt_duration;		
 				vmoved = random_mvmt_duration;
 				vinverted = 0;
 			}
@@ -88,7 +91,8 @@ int main()
 		{			
 			if (y > 16)
 			{
-				y = y - 1;
+				//y = y - 1;
+				y = random_mvmt_duration;
 				vmoved = random_mvmt_duration;
 				vinverted = 1;
 			}
