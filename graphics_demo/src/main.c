@@ -1,4 +1,6 @@
 #include <stm32f031x6.h>
+#include <stdlib.h>
+#include <time.h>
 #include "display.h"
 void initClock(void);
 void initSysTick(void);
@@ -44,11 +46,16 @@ int main()
 	initSysTick();
 	setupIO();
 	putImage(20,80,16,16,dg1,0,0);
+
+	//seed random number generation for random movement
+	srand(time(NULL));
+
 	while(1)
 	{
 		hmoved = vmoved = 0;
 		hinverted = vinverted = 0;
-		if ((GPIOB->IDR & (1 << 4))==0) // right pressed
+		int random_int = 1 + rand() % 4;
+		if (random_int==1) // right pressed
 		{					
 			if (x < 110)
 			{
@@ -57,7 +64,7 @@ int main()
 				hinverted=0;
 			}						
 		}
-		if ((GPIOB->IDR & (1 << 5))==0) // left pressed
+		if (random_int==2) // left pressed
 		{			
 			
 			if (x > 10)
@@ -67,7 +74,7 @@ int main()
 				hinverted=1;
 			}			
 		}
-		if ( (GPIOA->IDR & (1 << 11)) == 0) // down pressed
+		if (random_int==3) // down pressed
 		{
 			if (y < 140)
 			{
@@ -76,7 +83,7 @@ int main()
 				vinverted = 0;
 			}
 		}
-		if ( (GPIOA->IDR & (1 << 8)) == 0) // up pressed
+		if (random_int==4) // up pressed
 		{			
 			if (y > 16)
 			{
