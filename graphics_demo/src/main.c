@@ -39,7 +39,7 @@ int main()
 	int vmoved = 0;
 	int hunger = 100;
 	uint16_t x = 50;
-	uint16_t y = 50;
+	uint16_t y = 80;
 	uint16_t oldx = x;
 	uint16_t oldy = y;
 	initClock();
@@ -48,49 +48,72 @@ int main()
 
 	// Summons SPUDMAN
 	// void putImage(uint16_t x, uint16_t y, uint16_t width, uint16_t height, const uint16_t *Image, int hOrientation,int vOrientation);
-	putImage(64,80,16,16,spudmanIdle1,0,0);
+	//putImage(64,80,16,16,spudmanIdle1,0,0);
 
 	while(1)
 	{
-		hmoved = vmoved = 0;
+		hmoved = vmoved = 1;//display at start
 		hinverted = vinverted = 0;
-		int random_mvmt = 1 + rand() % 4;
-		int random_mvmt_duration = 10 + rand() % 20;
-		if (random_mvmt==1) // right pressed
-		{					
-			if (x < 110)
-			{
-				x = x + 1;
-				hmoved = random_mvmt_duration;
-				hinverted=0;
-			}						
-		}
-		if (random_mvmt==2) // left pressed
+		int random_mvmt = 1 + rand() % 5;//randomise direction
+		int random_mvmt_duration = 1 + rand() % 10;//randomise duration spent in that direction
+		if (random_mvmt==1) //right
+		{	
+			for(int i = 0; i < random_mvmt_duration;i++)
+			{				
+				if (x < 110)//checks if position is at edge of screen
+				{
+					x = x + 1;
+					hmoved = 1;
+					hinverted=0;
+				}
+			}//end if(duration)				
+		}//end if(direction)
+		if (random_mvmt==2) // left
 		{			
-			
-			if (x > 10)
+			for(int i = 0; i < random_mvmt_duration;i++)
 			{
-				x = x - 1;
-				hmoved = random_mvmt_duration;
-				hinverted=1;
-			}			
-		}
-		if (random_mvmt==3) // down pressed
+				if (x > 10)//checks if position is at edge of screen
+				{
+					x = x - 1;
+					hmoved = 1;
+					hinverted=1;
+				}	
+			}//end if(duration)	
+		}//end if(direction)
+		if (random_mvmt==3) // down
 		{
-			if (y < 140)
+			for(int i = 0;i < random_mvmt_duration;i++)
 			{
-				y = y + 1;		
-				vmoved = random_mvmt_duration;
-				vinverted = 0;
-			}
-		}
-		if (random_mvmt==4) // up pressed
+				if (y < 140)//checks if position is at edge of screen
+				{
+					y = y + 1;		
+					vmoved = 1;
+					vinverted = 0;
+				}
+			}//end if(duration)
+		}//end if(direction)
+		if (random_mvmt==4) // up 
 		{			
-			if (y > 16)
+			for(int i = 0;i < random_mvmt_duration;i++)
 			{
-				y = y - 1;
-				vmoved = random_mvmt_duration;
-				vinverted = 1;
+				if (y > 16)//checks if position is at edge of screen
+				{
+					y = y - 1;
+					vmoved = 1;
+					vinverted = 1;
+				}
+			}//end for(duration)
+		}//end for(direction)
+		else
+		{
+			//putImage(x,y,16,16,spudmanIdle1,0,0);
+			for(int i = 0;i < random_mvmt_duration;i++)
+			{
+				fillRectangle(oldx,oldy,32,32,0); oldx=x; oldy=y;
+				putImage(x,y,16,16,spudmanIdle1,hinverted,0);
+				delay(100);
+				putImage(x,y,16,16,spudmanIdle2,hinverted,0);
+				delay(100);
 			}
 		}
 		
@@ -126,7 +149,7 @@ int main()
 			}
 			*/
 		}		
-		delay(100);
+		delay(750);
 	}//end while
 	return 0;
 }//end main
