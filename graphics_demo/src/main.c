@@ -1,4 +1,6 @@
 #include <stm32f031x6.h>
+#include <stdlib.h>
+#include <time.h>
 #include "display.h"
 void initClock(void);
 void initSysTick(void);
@@ -52,6 +54,49 @@ int main()
 	{
 		hmoved = vmoved = 0;
 		hinverted = vinverted = 0;
+		int random_mvmt = 1 + rand() % 4;
+		int random_mvmt_duration = 10 + rand() % 20;
+		if (random_mvmt==1) // right pressed
+		{					
+			if (x < 110)
+			{
+				//x = x + 1;
+				x = random_mvmt_duration;
+				hmoved = random_mvmt_duration;
+				hinverted=0;
+			}						
+		}
+		if (random_mvmt==2) // left pressed
+		{			
+			
+			if (x > 10)
+			{
+				//x = x - 1;
+				x = random_mvmt_duration;
+				hmoved = random_mvmt_duration;
+				hinverted=1;
+			}			
+		}
+		if (random_mvmt==3) // down pressed
+		{
+			if (y < 140)
+			{
+				//y = y + 1;	
+				y = random_mvmt_duration;		
+				vmoved = random_mvmt_duration;
+				vinverted = 0;
+			}
+		}
+		if (random_mvmt==4) // up pressed
+		{			
+			if (y > 16)
+			{
+				//y = y - 1;
+				y = random_mvmt_duration;
+				vmoved = random_mvmt_duration;
+				vinverted = 1;
+			}
+		}
 
 	// Spudman Idle Animation
 	//putImage(20,80,16,16,spudmanIdle1,0,0);
