@@ -60,8 +60,7 @@ int main()
 		{					
 			if (x < 110)
 			{
-				//x = x + 1;
-				x = random_mvmt_duration;
+				x = x + 1;
 				hmoved = random_mvmt_duration;
 				hinverted=0;
 			}						
@@ -71,8 +70,7 @@ int main()
 			
 			if (x > 10)
 			{
-				//x = x - 1;
-				x = random_mvmt_duration;
+				x = x - 1;
 				hmoved = random_mvmt_duration;
 				hinverted=1;
 			}			
@@ -81,8 +79,7 @@ int main()
 		{
 			if (y < 140)
 			{
-				//y = y + 1;	
-				y = random_mvmt_duration;		
+				y = y + 1;		
 				vmoved = random_mvmt_duration;
 				vinverted = 0;
 			}
@@ -91,13 +88,11 @@ int main()
 		{			
 			if (y > 16)
 			{
-				//y = y - 1;
-				y = random_mvmt_duration;
+				y = y - 1;
 				vmoved = random_mvmt_duration;
 				vinverted = 1;
 			}
 		}
-
 	// Spudman Idle Animation
 	//putImage(20,80,16,16,spudmanIdle1,0,0);
 
@@ -137,10 +132,10 @@ int main()
 			}
 			*/
 		}		
-		delay(50);
-	}
+		delay(100);
+	}//end while
 	return 0;
-}
+}//end main
 void initSysTick(void)
 {
 	SysTick->LOAD = 48000;
