@@ -93,6 +93,7 @@ int main()
 				vinverted = 1;
 			}
 		}
+		
 	// Spudman Idle Animation
 	//putImage(20,80,16,16,spudmanIdle1,0,0);
 
@@ -108,23 +109,16 @@ int main()
 		if ((GPIOA->IDR & (1<<8))==0)  {if (y>16)  {y-=1; vmoved=1; vinverted=1;}}
 
 
-		if ((vmoved) || (hmoved))
-		{
-			// only redraw if there has been some movement (reduces flicker)
-			fillRectangle(oldx,oldy,32,32,0);
-			oldx = x;
-			oldy = y;					
-			if (hmoved)
-			{
-				if (toggle)
-					putImage(x,y,16,16,spudmanIdle1,hinverted,0);
-				else
-					putImage(x,y,16,16,spudmanIdle2,hinverted,0);
-				
+		if ((vmoved) || (hmoved)) {
+			// Redraws everything on screen ONLY if there has been movement (helps reduce flicker)
+			fillRectangle(oldx,oldy,32,32,0); oldx=x; oldy=y;					
+			if (hmoved) {
+				if (toggle) {putImage(x,y,16,16,spudmanIdle1,hinverted,0);}
+				else {putImage(x,y,16,16,spudmanIdle2,hinverted,0);}
 				toggle = toggle ^ 1;
 			}
 
-			/*
+			/* CODE FOR GLUG GLUG, IT CONTAINS CODE FOR COLLISION !!!
 			// Now check for an overlap by checking to see if ANY of the 4 corners of deco are within the target area
 			if (isInside(20,80,16,16,x,y) || isInside(20,80,16,16,x+12,y) || isInside(20,80,16,16,x,y+16) || isInside(20,80,16,16,x+12,y+16) )
 			{	
