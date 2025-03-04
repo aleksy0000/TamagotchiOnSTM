@@ -151,24 +151,8 @@ int main()
 		}		
 		delay(750);
 	}//end while
-		delay(50);
-		
-			if ((hmoved) || (vmoved)) // if spud is moved hunger bar decreases 
-			{
-				hunger = hunger - 1;
-				printNumberX2(hunger,80,20,0,1);
-				
-				if (hunger == 0 && !isDead)
-				{
-					printTextX2("Spuddy has starved to death",64,20,0,1);
-					isDead = 1;
-				}
-
-			}
-	}
-
 	return 0;
-}
+}//end main
 void initSysTick(void)
 {
 	SysTick->LOAD = 48000;
