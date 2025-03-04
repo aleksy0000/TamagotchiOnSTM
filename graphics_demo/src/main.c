@@ -54,41 +54,42 @@ int main()
 	{
 		hmoved = vmoved = 0;
 		hinverted = vinverted = 0;
-		int random_int = 1 + rand() % 4;
-		if (random_int==1) // right pressed
+		int random_mvmt = 1 + rand() % 4;
+		int random_mvmt_duration = 10 + rand() % 20;
+		if (random_mvmt==1) // right pressed
 		{					
 			if (x < 110)
 			{
 				x = x + 1;
-				hmoved = 1;
+				hmoved = random_mvmt_duration;
 				hinverted=0;
 			}						
 		}
-		if (random_int==2) // left pressed
+		if (random_mvmt==2) // left pressed
 		{			
 			
 			if (x > 10)
 			{
 				x = x - 1;
-				hmoved = 1;
+				hmoved = random_mvmt_duration;
 				hinverted=1;
 			}			
 		}
-		if (random_int==3) // down pressed
+		if (random_mvmt==3) // down pressed
 		{
 			if (y < 140)
 			{
 				y = y + 1;			
-				vmoved = 1;
+				vmoved = random_mvmt_duration;
 				vinverted = 0;
 			}
 		}
-		if (random_int==4) // up pressed
+		if (random_mvmt==4) // up pressed
 		{			
 			if (y > 16)
 			{
 				y = y - 1;
-				vmoved = 1;
+				vmoved = random_mvmt_duration;
 				vinverted = 1;
 			}
 		}
