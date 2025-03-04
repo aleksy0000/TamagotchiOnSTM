@@ -35,6 +35,7 @@ int main()
 	int toggle = 0;
 	int hmoved = 0;
 	int vmoved = 0;
+	int hunger = 100;
 	uint16_t x = 50;
 	uint16_t y = 50;
 	uint16_t oldx = x;
