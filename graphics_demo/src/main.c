@@ -92,6 +92,16 @@ int main()
 				vinverted = 1;
 			}
 		}
+
+		// Move right
+		if ((GPIOB->IDR & (1<<4))==0)  {if (x<110) {x+=1; hmoved=1; hinverted=0;}}
+		// Move left
+		if ((GPIOB->IDR & (1<<5))==0)  {if (x>10)  {x-=1; hmoved=1; hinverted=1;}}
+		// Move down
+		if ((GPIOA->IDR & (1<<11))==0) {if (y<140) {y+=1; vmoved=1; vinverted=0;}}
+		// Move up
+		if ((GPIOA->IDR & (1<<8))==0)  {if (y>16)  {y-=1; vmoved=1; vinverted=1;}}
+
 		if ((vmoved) || (hmoved))
 		{
 			// only redraw if there has been some movement (reduces flicker)
