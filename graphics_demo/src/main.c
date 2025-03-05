@@ -34,7 +34,11 @@ int main()
 	// Fun Bar
 	int fun = 100;
 
-	int hunger = 100;
+	// Hunger
+	int hunger = 3;
+	int isDead;
+
+
 	uint16_t x = 50;
 	uint16_t y = 80;
 	uint16_t oldx = x;
@@ -126,6 +130,23 @@ int main()
 			}//end for(duration)
 		}//end for(direction)
 
+		if(isMoving) // if spud is moved hunger bar decreases 
+		{
+			hunger = hunger - 1;
+			printNumber(hunger,80,10,255,0);
+			printText("Hunger:",10,10,255,0);
+
+			if (hunger == 0 && !isDead)
+			{
+				printText("Spuddy has starved",0,40,255,0);
+				printText("to death",40,50,255,0);
+				isDead = 1;
+				break;
+			}
+		}
+
+	// Spudman Idle Animation
+	//putImage(20,80,16,16,spudmanIdle1,0,0);
 
 
 	// Movement Code
