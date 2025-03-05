@@ -37,7 +37,7 @@ int main()
 	int toggle = 0;
 	int hmoved = 0;
 	int vmoved = 0;
-	int hunger = 100;
+	int hunger = 3;
 	int isDead;
 	uint16_t x = 50;
 	uint16_t y = 80;
@@ -120,12 +120,15 @@ int main()
 		if(random_mvmt || 1 || 2 || 3 || 4) // if spud is moved hunger bar decreases 
 		{
 			hunger = hunger - 1;
-			printNumberX2(hunger,80,20,0,1);
-			
+			printNumber(hunger,80,10,255,0);
+			printText("Hunger:",10,10,255,0);
+
 			if (hunger == 0 && !isDead)
 			{
-				printTextX2("Spuddy has starved to death",64,20,0,1);
+				printText("Spuddy has starved",0,40,255,0);
+				printText("to death",40,50,255,0);
 				isDead = 1;
+				break;
 			}
 		}
 		
