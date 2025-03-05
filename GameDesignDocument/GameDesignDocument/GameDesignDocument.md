@@ -8,11 +8,8 @@ A game about taking care of living vegetables!
 - Play with them!
 - EAT THEM!
 
-## Prototype 1
-- Make 20x20 sprite
-  48x48 - Makes bigger sprite, however, using ALOT of memory
-- Write code for moving the sprite with buttons
-  Already Included
+## General Information
+**Screen Size**
 
-### Ideas
-- Nice looking GUI/Overlay for the edges
+**Spudman Size**
+- 16x20 (width x height) pixels for all animations

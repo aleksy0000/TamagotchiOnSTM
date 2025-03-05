@@ -5,6 +5,10 @@
       "path": "GameDesignDocument.md"
     },
     {
+      "basename": "Rubrics",
+      "path": "Rubrics.md"
+    },
+    {
       "basename": "Timeline of Events",
       "path": "Timeline of Events.md"
     },
@@ -195,10 +199,6 @@
     {
       "basename": "Printing a 2D Array - C",
       "path": "College/Modules/Programming/Unsorted/Printing a 2D Array - C.md"
-    },
-    {
-      "basename": "Pointers and Arrays - C",
-      "path": "College/Modules/Programming/Unsorted/Pointers and Arrays - C.md"
     }
   ],
   "omittedPaths": [],

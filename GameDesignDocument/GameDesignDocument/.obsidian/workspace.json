@@ -149,7 +149,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 349.5
+    "width": 349.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -166,6 +167,7 @@
   "active": "e7a7b303c61786dc",
   "lastOpenFiles": [
     "GameDesignDocument.md",
+    "Rubrics.md",
     "Timeline of Events.md",
     "Welcome.md",
     "College/Modules/Microprocessors Systems/Project.md",
@@ -191,7 +193,6 @@
     "College/Modules/Programming/Unsorted/Strings and Arrays - C.md",
     "College/Modules/Programming/Variable Naming Schemes.md",
     "College/Modules/Programming/Unsorted/Symbolic Names - Cc.md",
-    "College/Modules/Programming/Symbolic Names - C.md",
     "College/Modules/Programming/Unsorted",
     "College/Modules",
     "College/TU856-1/Exam Papers/CMPU 1006 - 2023.2024.pdf",
