@@ -11,6 +11,7 @@ int isInside(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint16_t px, uint
 void enablePullUp(GPIO_TypeDef *Port, uint32_t BitNumber);
 void pinMode(GPIO_TypeDef *Port, uint32_t BitNumber, uint32_t Mode);
 int mvmt(uint16_t *, uint16_t *, uint16_t *, uint16_t *);
+int hungerBar(int,int);
 
 volatile uint32_t milliseconds;
 
@@ -29,7 +30,7 @@ int main()
 	int fun = 100;
 
 	// Hunger
-	int hunger = 100;
+	int hunger = 3;
 	int isDead;
 
 	//position
@@ -53,6 +54,14 @@ int main()
 	//Gameplay starts:
 	while(1)
 	{
+		//Hunger bar initialize 
+		hunger = hungerBar(hunger,isMoving);
+		if (hunger == 0 && !isDead)
+		{
+			printText("Spuddy has starved",0,40,255,0);
+			printText("to death",40,50,255,0);
+		}
+
 		// Fun Bar
 		fun -= 10;
 		delay(1000);
@@ -60,27 +69,22 @@ int main()
 		//Pass x and y as pointers to mvmt function, returns either 1 if moving 0 if idle
 		isMoving = mvmt(&x, &y, &oldx, &oldy);
 
-		
-		if(isMoving) // if spud is moved hunger bar decreases 
-		{
-			hunger = hunger - 1;
-			printNumber(hunger,80,10,255,0);
-			printText("Hunger:",10,10,255,0);
-
-			if (hunger == 0 && !isDead)
-			{
-				printText("Spuddy has starved",0,40,255,0);
-				printText("to death",40,50,255,0);
-				isDead = 1;
-				break;
-			}
-		}
-				
 		delay(750);
-
 	}
+
 	return 0;
 }//end main
+
+int hungerBar(int hngr, int moving)
+{
+	if(moving) // if spud is moved hunger bar decreases 
+	{
+		hngr = hngr - 1;
+		printNumber(hngr,80,10,255,0);
+		printText("Hunger:",10,10,255,0);
+		return hngr;
+	}
+}
 
 void initSysTick(void)
 {
