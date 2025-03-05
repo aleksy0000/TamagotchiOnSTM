@@ -24,6 +24,8 @@ const uint16_t spudman_D2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,285
 
 int main()
 {
+	// Current Stage
+	int stage = 0;
 
 	// Fun Bar
 	int fun = 100;
@@ -47,34 +49,53 @@ int main()
 	initSysTick();
 	setupIO();
 
-	// Summons SPUDMAN
-	putImage(64,80,16,16,spudman_D1,0,0);
+	
 
 	//Gameplay starts:
 	while(1)
 	{
+		stage = 0;
+		if (stage == 0) {
+
+		}
+
+		if (stage == 1) {
+			// Change backdrop
+			
+
+			// Summons SPUDMAN
+			putImage(64,80,16,16,spudman_D1,0,0);
+
+			//Pass x and y as pointers to mvmt function, returns either 1 if moving 0 if idle
+			isMoving = mvmt(&x, &y, &oldx, &oldy);
+	
+
+			if(isMoving) // if spud is moved hunger bar decreases 
+			{
+				hunger = hunger - 1;
+				printNumber(hunger,80,10,255,0);
+				printText("Hunger:",10,10,255,0);
+	
+				if (hunger == 0 && !isDead)
+				{
+					printText("Spuddy has starved",0,40,255,0);
+					printText("to death",40,50,255,0);
+					isDead = 1;	
+					break;
+				}
+			}
+		}
+
+
+
+
 		// Fun Bar
 		fun -= 10;
 		delay(1000);
 
-		//Pass x and y as pointers to mvmt function, returns either 1 if moving 0 if idle
-		isMoving = mvmt(&x, &y, &oldx, &oldy);
 
 		
-		if(isMoving) // if spud is moved hunger bar decreases 
-		{
-			hunger = hunger - 1;
-			printNumber(hunger,80,10,255,0);
-			printText("Hunger:",10,10,255,0);
 
-			if (hunger == 0 && !isDead)
-			{
-				printText("Spuddy has starved",0,40,255,0);
-				printText("to death",40,50,255,0);
-				isDead = 1;
-				break;
-			}
-		}
 				
 		delay(750);
 
@@ -271,12 +292,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 }//end mvmt function
 
 
-
 ///////////Old Stuff////////////
-// Spudman Idle Animation
-	//putImage(20,80,16,16,spudmanIdle1,0,0);
-
-
 	// Movement Code
 		// Move down
 		//if ((GPIOA->IDR & (1<<11))==0) {if (y<140) {y+=1; isMoving=1; direction=0; invertH=0;}}
