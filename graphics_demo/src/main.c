@@ -61,41 +61,6 @@ int main()
  		random_mvmt = 0 + rand() % 3;//randomise direction
 		random_mvmt_duration = 1 + rand() % 10;//randomise duration spent in that direction
 		
-		// Move right
-		if (random_mvmt==3) 
-		{	
-			for(int i = 0; i < random_mvmt_duration;i++)
-			{				
-				if (x < 110)//checks if position is at edge of screen
-				{
-					x = x + 1;
-					fillRectangle(oldx,oldy,32,32,0); oldx=x; oldy=y;
-					putImage(x,y,16,20,spudman_R1,0,0);
-					delay(50);
-					putImage(x,y,16,20,spudman_R2,0,0);
-					delay(50);
-				}
-			}//end if(duration)				
-		}//end if(direction)
-
-		// Move Left
-		if (random_mvmt==2)
-		{			
-			for(int i = 0; i < random_mvmt_duration;i++)
-			{
-				if (x > 10)//checks if position is at edge of screen
-				{
-					x = x - 1;
-					fillRectangle(oldx,oldy,32,32,0); oldx=x; oldy=y;
-					putImage(x,y,16,20,spudman_R1,1,0);
-					delay(50);
-					putImage(x,y,16,20,spudman_R2,1,0);
-					delay(50);
-				}	
-			}//end if(duration)	
-		}//end if(direction)
-
-
 		// Move Down
 		if (random_mvmt==0)
 		{
@@ -114,7 +79,7 @@ int main()
 		}//end if(direction)
 
 		// Move Up
-		if (random_mvmt==4)
+		if (random_mvmt==1)
 		{			
 			for(int i = 0;i < random_mvmt_duration;i++)
 			{
@@ -129,6 +94,41 @@ int main()
 				}
 			}//end for(duration)
 		}//end for(direction)
+	
+		// Move Left
+		if (random_mvmt==2)
+		{			
+			for(int i = 0; i < random_mvmt_duration;i++)
+			{
+				if (x > 10)//checks if position is at edge of screen
+				{
+					x = x - 1;
+					fillRectangle(oldx,oldy,32,32,0); oldx=x; oldy=y;
+					putImage(x,y,16,20,spudman_R1,1,0);
+					delay(50);
+					putImage(x,y,16,20,spudman_R2,1,0);
+					delay(50);
+				}	
+			}//end if(duration)	
+		}//end if(direction)
+
+		// Move right
+		if (random_mvmt==3) 
+		{	
+			for(int i = 0; i < random_mvmt_duration;i++)
+			{				
+				if (x < 110)//checks if position is at edge of screen
+				{
+					x = x + 1;
+					fillRectangle(oldx,oldy,32,32,0); oldx=x; oldy=y;
+					putImage(x,y,16,20,spudman_R1,0,0);
+					delay(50);
+					putImage(x,y,16,20,spudman_R2,0,0);
+					delay(50);
+				}
+			}//end if(duration)				
+		}//end if(direction)
+
 
 		if(isMoving) // if spud is moved hunger bar decreases 
 		{
