@@ -10,6 +10,7 @@ void setupIO();
 int isInside(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint16_t px, uint16_t py);
 void enablePullUp(GPIO_TypeDef *Port, uint32_t BitNumber);
 void pinMode(GPIO_TypeDef *Port, uint32_t BitNumber, uint32_t Mode);
+int mvmt(uint16_t *, uint16_t *, uint16_t *, uint16_t *);
 
 volatile uint32_t milliseconds;
 
@@ -23,14 +24,7 @@ const uint16_t spudman_D2[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,285
 
 int main()
 {
-	srand(time(NULL));
 
-
-	// Movement Variables
-	int isMoving = 0;   // (0=stationary) (1=moving)
-	int random_mvmt;  // (0=down 1=up)  (2=left 3=right) !Default is 0!
-	int random_mvmt_duration;
-	
 	// Fun Bar
 	int fun = 100;
 
@@ -38,11 +32,17 @@ int main()
 	int hunger = 3;
 	int isDead;
 
-
+	//position
 	uint16_t x = 50;
 	uint16_t y = 80;
 	uint16_t oldx = x;
 	uint16_t oldy = y;
+
+	//mvmt
+	int isMoving;
+	srand(time(NULL));
+
+	// what you call this?
 	initClock();
 	initSysTick();
 	setupIO();
@@ -50,86 +50,17 @@ int main()
 	// Summons SPUDMAN
 	putImage(64,80,16,16,spudman_D1,0,0);
 
+	//Gameplay starts:
 	while(1)
 	{
-	// Fun Bar
+		// Fun Bar
 		fun -= 1;
 		delay(1000);
 
-	// Movement
-		isMoving = 0;
- 		random_mvmt = 0 + rand() % 3;//randomise direction
-		random_mvmt_duration = 1 + rand() % 10;//randomise duration spent in that direction
+		//Pass x and y as pointers to mvmt function, returns either 1 if moving 0 if idle
+		isMoving = mvmt(&x, &y, &oldx, &oldy);
+
 		
-		// Move Down
-		if (random_mvmt==0)
-		{
-			for(int i = 0;i < random_mvmt_duration;i++)
-			{
-				if (y < 140)//checks if position is at edge of screen
-				{
-					y = y + 1;	
-					fillRectangle(oldx,oldy,32,32,0); oldx=x; oldy=y;
-					putImage(x,y,16,20,spudman_D1,0,0);
-					delay(50);
-					putImage(x,y,16,20,spudman_D2,0,0);
-					delay(50);				
-				}
-			}//end if(duration)
-		}//end if(direction)
-
-		// Move Up
-		if (random_mvmt==1)
-		{			
-			for(int i = 0;i < random_mvmt_duration;i++)
-			{
-				if (y > 16)//checks if position is at edge of screen
-				{
-					y = y - 1;
-					fillRectangle(oldx,oldy,32,32,0); oldx=x; oldy=y;
-					putImage(x,y,16,20,spudman_U1,0,0);
-					delay(50);
-					putImage(x,y,16,20,spudman_U2,0,0);
-					delay(50);
-				}
-			}//end for(duration)
-		}//end for(direction)
-	
-		// Move Left
-		if (random_mvmt==2)
-		{			
-			for(int i = 0; i < random_mvmt_duration;i++)
-			{
-				if (x > 10)//checks if position is at edge of screen
-				{
-					x = x - 1;
-					fillRectangle(oldx,oldy,32,32,0); oldx=x; oldy=y;
-					putImage(x,y,16,20,spudman_R1,1,0);
-					delay(50);
-					putImage(x,y,16,20,spudman_R2,1,0);
-					delay(50);
-				}	
-			}//end if(duration)	
-		}//end if(direction)
-
-		// Move right
-		if (random_mvmt==3) 
-		{	
-			for(int i = 0; i < random_mvmt_duration;i++)
-			{				
-				if (x < 110)//checks if position is at edge of screen
-				{
-					x = x + 1;
-					fillRectangle(oldx,oldy,32,32,0); oldx=x; oldy=y;
-					putImage(x,y,16,20,spudman_R1,0,0);
-					delay(50);
-					putImage(x,y,16,20,spudman_R2,0,0);
-					delay(50);
-				}
-			}//end if(duration)				
-		}//end if(direction)
-
-
 		if(isMoving) // if spud is moved hunger bar decreases 
 		{
 			hunger = hunger - 1;
@@ -144,29 +75,6 @@ int main()
 				break;
 			}
 		}
-
-	// Spudman Idle Animation
-	//putImage(20,80,16,16,spudmanIdle1,0,0);
-
-
-	// Movement Code
-		// Move down
-		//if ((GPIOA->IDR & (1<<11))==0) {if (y<140) {y+=1; isMoving=1; direction=0; invertH=0;}}
-		// Move up
-		//if ((GPIOA->IDR & (1<<8))==0)  {if (y>16)  {y-=1; isMoving=1; direction=1; invertH=0;}}
-		// Move left
-		//if ((GPIOB->IDR & (1<<5))==0)  {if (x>10)  {x-=1; isMoving=1; direction=2; invertH=1;}}
-		// Move right
-		//if ((GPIOB->IDR & (1<<4))==0)  {if (x<110) {x+=1; isMoving=1; direction=3; invertH=0;}}
-	
-
-		/* CODE FOR GLUG GLUG, IT CONTAINS CODE FOR COLLISION !!!
-		// Now check for an overlap by checking to see if ANY of the 4 corners of deco are within the target area
-		if (isInside(20,80,16,16,x,y) || isInside(20,80,16,16,x+12,y) || isInside(20,80,16,16,x,y+16) || isInside(20,80,16,16,x+12,y+16) )
-		{	
-		printTextX2("GLUG!", 10, 20, RGBToWord(0xff,0xff,0), 0); 
-		}
-		*/
 				
 		delay(750);
 
@@ -264,3 +172,126 @@ void setupIO()
 	enablePullUp(GPIOA,11);
 	enablePullUp(GPIOA,8);
 }
+
+//mega efficient movement algorithm FAANG level.
+int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
+{
+	// Movement Variables
+	int isMoving = 0;   // (0=stationary) (1=moving)
+	int random_mvmt;  // (0=down 1=up)  (2=left 3=right) !Default is 0!
+	int random_mvmt_duration;
+	
+	// Movement
+	random_mvmt = 0 + rand() % 4;//randomise direction
+	random_mvmt_duration = 1 + rand() % 10;//randomise duration spent in that direction
+
+	///////////////////////START MVMT IF SEQUENCE/////////////////////////
+	// Move Down
+	if (random_mvmt==0)
+	{
+		for(int i = 0;i < random_mvmt_duration;i++)
+		{
+			if (*y < 140)//checks if position is at edge of screen
+			{
+				*y = *y + 1;	
+				fillRectangle(*oldx,*oldy,32,32,0); *oldx= *x; *oldy= *y;
+				putImage(*x,*y,16,20,spudman_D1,0,0);
+				delay(50);
+				putImage(*x,*y,16,20,spudman_D2,0,0);
+				delay(50);				
+			}
+		}//end if(duration)
+		isMoving = 1;
+		return isMoving;
+	}//end if(direction)
+
+	// Move Up
+	else if (random_mvmt==1)
+	{			
+		for(int i = 0;i < random_mvmt_duration;i++)
+		{
+			if (*y > 16)//checks if position is at edge of screen
+			{
+				*y = *y - 1;
+				fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
+				putImage(*x,*y,16,20,spudman_U1,0,0);
+				delay(50);
+				putImage(*x,*y,16,20,spudman_U2,0,0);
+				delay(50);
+			}
+		}//end for(duration)
+		isMoving = 1;
+		return isMoving;
+	}//end for(direction)
+
+	// Move Left
+	else if (random_mvmt==2)
+	{			
+		for(int i = 0; i < random_mvmt_duration;i++)
+		{
+			if (*x > 10)//checks if position is at edge of screen
+			{
+				*x = *x - 1;
+				fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
+				putImage(*x,*y,16,20,spudman_R1,1,0);
+				delay(50);
+				putImage(*x,*y,16,20,spudman_R2,1,0);
+				delay(50);
+			}	
+		}//end if(duration)	
+		isMoving = 1;
+		return isMoving;
+	}//end if(direction)
+
+	// Move right
+	else if (random_mvmt==3) 
+	{	
+		for(int i = 0; i < random_mvmt_duration;i++)
+		{				
+			if (*x < 110)//checks if position is at edge of screen
+			{
+				*x = *x + 1;
+				fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
+				putImage(*x,*y,16,20,spudman_R1,0,0);
+				delay(50);
+				putImage(*x,*y,16,20,spudman_R2,0,0);
+				delay(50);
+			}
+		}//end if(duration)		
+		isMoving = 1;
+		return isMoving;		
+	}//end if(direction)
+
+	//Did not move(random_mvmt = 4)
+	else
+	{
+		return isMoving;
+	}//end else
+	///////////////////////END MVMT IF SEQUENCE/////////////////////////
+}//end mvmt function
+
+
+
+///////////Old Stuff////////////
+// Spudman Idle Animation
+	//putImage(20,80,16,16,spudmanIdle1,0,0);
+
+
+	// Movement Code
+		// Move down
+		//if ((GPIOA->IDR & (1<<11))==0) {if (y<140) {y+=1; isMoving=1; direction=0; invertH=0;}}
+		// Move up
+		//if ((GPIOA->IDR & (1<<8))==0)  {if (y>16)  {y-=1; isMoving=1; direction=1; invertH=0;}}
+		// Move left
+		//if ((GPIOB->IDR & (1<<5))==0)  {if (x>10)  {x-=1; isMoving=1; direction=2; invertH=1;}}
+		// Move right
+		//if ((GPIOB->IDR & (1<<4))==0)  {if (x<110) {x+=1; isMoving=1; direction=3; invertH=0;}}
+	
+
+		/* CODE FOR GLUG GLUG, IT CONTAINS CODE FOR COLLISION !!!
+		// Now check for an overlap by checking to see if ANY of the 4 corners of deco are within the target area
+		if (isInside(20,80,16,16,x,y) || isInside(20,80,16,16,x+12,y) || isInside(20,80,16,16,x,y+16) || isInside(20,80,16,16,x+12,y+16) )
+		{	
+		printTextX2("GLUG!", 10, 20, RGBToWord(0xff,0xff,0), 0); 
+		}
+		*/
