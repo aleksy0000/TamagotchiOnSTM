@@ -29,7 +29,7 @@ int main()
 	int fun = 100;
 
 	// Hunger
-	int hunger = 3;
+	int hunger = 100;
 	int isDead;
 
 	//position
@@ -54,7 +54,7 @@ int main()
 	while(1)
 	{
 		// Fun Bar
-		fun -= 1;
+		fun -= 10;
 		delay(1000);
 
 		//Pass x and y as pointers to mvmt function, returns either 1 if moving 0 if idle
