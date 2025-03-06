@@ -12,6 +12,8 @@ void enablePullUp(GPIO_TypeDef *Port, uint32_t BitNumber);
 void pinMode(GPIO_TypeDef *Port, uint32_t BitNumber, uint32_t Mode);
 int mvmt(uint16_t *, uint16_t *, uint16_t *, uint16_t *);
 int hungerBar(int,int);
+int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy);
+
 
 volatile uint32_t milliseconds;
 
@@ -30,9 +32,8 @@ int main()
 
 	// Fun Bar
 	int fun = 100;
-	int gameScore;
 	// Hunger
-	int hunger = 3;
+	int hunger = 50;
 	int isDead;
 
 	//position
@@ -49,8 +50,6 @@ int main()
 	initClock();
 	initSysTick();
 	setupIO();
-
-	gameScore = FunGame(&x, &y);
 	
 
 	//Gameplay starts:
@@ -66,7 +65,7 @@ int main()
 			
 
 			// Summons SPUDMAN
-			putImage(64,80,16,16,spudman_D1,0,0);
+			//putImage(64,80,16,16,spudman_D1,0,0);
 
 			//Pass x and y as pointers to mvmt function, returns either 1 if moving 0 if idle
 			isMoving = mvmt(&x, &y, &oldx, &oldy);
@@ -88,23 +87,10 @@ int main()
 			}
 		}//end if stage 1
 
-		if(stage == 2)
+		if((GPIOB->IDR & (1<<5))==0)
 		{
-			drawobstacle();
+			hunger = hunger + FunGame(&x, &y, &oldx, &oldy);
 		}
-
-
-
-
-		// Fun Bar
-		fun -= 10;
-		delay(1000);
-
-
-		
-
-				
-		delay(750);
 	}
 
 	return 0;
@@ -309,36 +295,65 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 	///////////////////////END MVMT IF SEQUENCE/////////////////////////
 }//end mvmt function
 
-int FunGame(uint16_t *x, uint16_t *y)
+int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 {
-	int score;
-	int lost = 0;
+	int score = 0;
+	//int buttonPress = 0;
 
-	while(lost == 0)
+	while(1)
 	{
-		putImage(79,111,16,16,slug,0,0);
+		*x = 5;
+		*y = 80;
+		putImage(79,80,16,16,slug,0,0);
+		printNumber(score,80,10,255,0);
+		printText("score:",10,10,255,0);
+		putImage(*x,*y,16,20,spudman_R1,0,0);
 
-		//Jump
-		if ((GPIOA->IDR & (1<<8))==0)  {if (*y>16)  {*y-=15;}}
-
-		if (isInside(79,111,16,16,*x,*y))
-		{	
-			printTextX2("You Lost!", 10, 20, RGBToWord(0xff,0xff,0), 0); 
-
-			return score;
-		}
-		else if(*y > 127)
+		for(int i = 0; *x < 105; i++)
 		{
-			score += 1;
-			*x = 10;
-			*y = 128;
-			
-		}
+			*x = *x + 2;
+			fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
+			putImage(*x,*y,16,20,spudman_R1,0,0);
+			delay(50);
+			putImage(*x,*y,16,20,spudman_R2,0,0);
+			delay(50);
 
-	}
+			//Jump 
+			if ((GPIOA->IDR & (1<<8))==0)  
+			{
+				for(int i = 0; i < 25;i++)
+				{
+						*x = *x + 1;
+						*y = *y - 1;
+						fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
+						putImage(*x,*y,16,20,spudman_R1,0,0);
+						delay(50);
+						putImage(*x,*y,16,20,spudman_R2,0,0);
+						delay(50);
+				}
+				for(int i = 0; i < 25;i++)
+				{
+						*x = *x + 1;
+						*y = *y + 1;
+						fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
+						putImage(*x,*y,16,20,spudman_R1,0,0);
+						delay(50);
+						putImage(*x,*y,16,20,spudman_R2,0,0);
+						delay(50);
+				}
+				delay(100);	
+			}//end jump loop
+			if (isInside(70,80,16,16,*x,*y))
+			{	
+				return score;
+			}
+		}//end for(constant mvmt to the right)
+		score += 1;
+	}//end while(1)
 	
-}
+}//end FunGame()
 
+//Jump if ((GPIOA->IDR & (1<<8))==0)  {if (*y>16)  {*y-=15;}}
 ///////////Old Stuff////////////
 	// Movement Code
 		// Move down
