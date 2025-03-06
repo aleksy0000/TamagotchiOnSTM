@@ -69,87 +69,77 @@ int main()
 	initSysTick();
 	setupIO();
 	
+	stage = 1;
 
 	//Gameplay starts:
 	while(1)
 	{
 		updateDisplayTime();
-		stage = 1; // Debugging purposes
-		if (stage == 0) {
+		//stage = 1; // Debugging purposes
 
-		switch (stage) {
-			 // Main Menu
-			case 0:
-				// Set Backdrop
-				fillRectangle(0,0,128,160,skyBlue);         // Sky
-				fillRectangle(0,60,128,160,soilBrown);      // Soil
-				fillRectangle(0,45,128,23,grassGreen);      // Grass
-				for (int i=8; i<120; i+=11) {			    // Bumpy grass
-					fillCircle(i,48,7,grassGreen);
-					fillCircle(i,64,7,grassGreen);
-				} // End for
+		if(stage == 0)
+		{
+			// Set Backdrop
+			fillRectangle(0,0,128,160,skyBlue);         // Sky
+			fillRectangle(0,60,128,160,soilBrown);      // Soil
+			fillRectangle(0,45,128,23,grassGreen);      // Grass
+			for (int i=8; i<120; i+=11) 
+			{			    // Bumpy grass
+				fillCircle(i,48,7,grassGreen);
+				fillCircle(i,64,7,grassGreen);
+			} // End for
 
 
-				// Title
-				printTextX2("Spudman!",5,5,0,skyBlue);
+			// Title
+			printTextX2("Spudman!",5,5,0,skyBlue);
 
-				while (1) {
-					putImage(104,10,20,20,sun_1,0,0);       // Sun
-					putImage(56,120,34,40,spudman_D1,0,0);  // Spudman
-					putImage(80,100,18,13,slug_1,0,0);		// Left slug
-					putImage(20,90,18,13,slug_1,1,0);		// Right slug
-					delay(100);
-					putImage(104,10,20,20,sun_2,0,0);
-					putImage(56,120,34,40,spudman_D2,0,0);
-					putImage(80,100,18,13,slug_2,0,0);
-					putImage(20,90,18,13,slug_2,1,0);
-					delay(100);
-				} // End while
-
-				stage = 9;
-
-				break;
-			// End stage 0
-
-			// Pet Stage
-			case 1:
-				// Change backdrop
+			while (1) 
+			{
+				putImage(104,10,20,20,sun_1,0,0);       // Sun
+				putImage(56,120,34,40,spudman_D1,0,0);  // Spudman
+				putImage(80,100,18,13,slug_1,0,0);		// Left slug
+				putImage(20,90,18,13,slug_1,1,0);		// Right slug
+				delay(100);
+				putImage(104,10,20,20,sun_2,0,0);
+				putImage(56,120,34,40,spudman_D2,0,0);
+				putImage(80,100,18,13,slug_2,0,0);
+				putImage(20,90,18,13,slug_2,1,0);
+				delay(100);
+			} // End while
+		}
+		else if(stage == 1)
+		{
+			// Change backdrop
 			
 
-			// Summons SPUDMAN
-			//putImage(64,80,16,16,spudman_D1,0,0);
-
-				//Pass x and y as pointers to mvmt function, returns either 1 if moving 0 if idle
-				isMoving = mvmt(&x, &y, &oldx, &oldy);
+			//Press left to play dino game
+			if((GPIOB->IDR & (1<<5))==0)
+			{
+				stage = 2;
+			}
+			//Pass x and y as pointers to mvmt function, returns either 1 if moving 0 if idle
+			isMoving = mvmt(&x, &y, &oldx, &oldy);
 		
-				// if spud is moved hunger bar decreases 
-				if(isMoving)
-				{
-					hunger = hunger - 1;
-					printNumber(hunger,80,10,255,0);
-					printText("Hunger:",10,10,255,0);
+			// if spud is moved hunger bar decreases 
+			hunger = hungerBar(hunger, isMoving);
+			//check if dead
+			if (hunger == 0)
+			{
+				printText("Spuddy has starved",0,40,255,0);
+				printText("to death",40,50,255,0);
+				stage = 0;	
+			}
 		
-					if (hunger == 0 && !isDead)
-					{
-						printText("Spuddy has starved",0,40,255,0);
-						printText("to death",40,50,255,0);
-						isDead = 1;	
-						break;
-					}
-				} // End if
-
-				break;
-			// End stage 1
-			
-			// Do Nothing (testing purposes)
-			case 9:
-
-				break;
-
-
-		if((GPIOB->IDR & (1<<5))==0)
+		}
+		else if(stage == 2)//Dino Game
 		{
 			hunger = hunger + FunGame(&x, &y, &oldx, &oldy);
+
+			stage = 1;
+		}
+		else if(stage == 3)
+		{
+			//nothing, placeholder for more games
 		}
 	}
 
@@ -306,9 +296,9 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			{
 				*y = *y + 1;	
 				fillRectangle(*oldx,*oldy,32,32,0); *oldx= *x; *oldy= *y;
-				putImage(*x,*y,16,20,spudman_D1,0,0);
+				putImage(*x,*y,34,40,spudman_D1,0,0);
 				delay(50);
-				putImage(*x,*y,16,20,spudman_D2,0,0);
+				putImage(*x,*y,34,40,spudman_D2,0,0);
 				delay(50);				
 			}
 		}//end if(duration)
@@ -325,9 +315,9 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			{
 				*y = *y - 1;
 				fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
-				putImage(*x,*y,16,20,spudman_U1,0,0);
+				putImage(*x,*y,34,40,spudman_U1,0,0);
 				delay(50);
-				putImage(*x,*y,16,20,spudman_U2,0,0);
+				putImage(*x,*y,34,40,spudman_U2,0,0);
 				delay(50);
 			}
 		}//end for(duration)
@@ -344,9 +334,9 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			{
 				*x = *x - 1;
 				fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
-				putImage(*x,*y,16,20,spudman_R1,1,0);
+				putImage(*x,*y,34,40,spudman_R1,1,0);
 				delay(50);
-				putImage(*x,*y,16,20,spudman_R2,1,0);
+				putImage(*x,*y,34,40,spudman_R2,1,0);
 				delay(50);
 			}	
 		}//end if(duration)	
@@ -363,9 +353,9 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			{
 				*x = *x + 1;
 				fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
-				putImage(*x,*y,16,20,spudman_R1,0,0);
+				putImage(*x,*y,34,40,spudman_R1,0,0);
 				delay(50);
-				putImage(*x,*y,16,20,spudman_R2,0,0);
+				putImage(*x,*y,34,40,spudman_R2,0,0);
 				delay(50);
 			}
 		}//end if(duration)		
@@ -390,7 +380,7 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 	{
 		*x = 5;
 		*y = 80;
-		putImage(79,80,18,13,slug_1,0,0);
+		putImage(70,80,18,13,slug_1,0,0);
 		printNumber(score,80,10,255,0);
 		printText("score:",10,10,255,0);
 		putImage(*x,*y,34,40,spudman_R1,0,0);
@@ -409,28 +399,28 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			{
 				for(int i = 0; i < 25;i++)
 				{
-						*x = *x + 1;
-						*y = *y - 1;
-						fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
-						putImage(*x,*y,16,20,spudman_R1,0,0);
-						delay(50);
-						putImage(*x,*y,16,20,spudman_R2,0,0);
-						delay(50);
+					*x = *x + 1;
+					*y = *y - 1;
+					fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
+					putImage(*x,*y,34,40,spudman_R1,0,0);
+					delay(50);
+					putImage(*x,*y,34,40,spudman_R2,0,0);
+					delay(50);
 				}
 				for(int i = 0; i < 25;i++)
 				{
-						*x = *x + 1;
-						*y = *y + 1;
-						fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
-						putImage(*x,*y,16,20,spudman_R1,0,0);
-						delay(50);
-						putImage(*x,*y,16,20,spudman_R2,0,0);
-						delay(50);
+					*x = *x + 1;
+					*y = *y + 1;
+					fillRectangle(*oldx,*oldy,32,32,0); *oldx=*x; *oldy=*y;
+					putImage(*x,*y,34,40,spudman_R1,0,0);
+					delay(50);
+					putImage(*x,*y,34,40,spudman_R2,0,0);
+					delay(50);
 				}
 				delay(100);	
 			}//end jump loop
 			
-			if (isInside(70,80,16,16,*x,*y))
+			if (isInside(70,80,16,16,*x,*y) || isInside(70,80,16,16,*x+12,*y) || isInside(70,80,16,16,*x,*y+16) || isInside(70,80,16,16,*x+12,*y+16))
 			{	
 				return score;
 			}
@@ -460,3 +450,80 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 		printTextX2("GLUG!", 10, 20, RGBToWord(0xff,0xff,0), 0); 
 		}
 		*/
+	/*switch (stage) 
+		{
+			 // Main Menu
+			case 0:
+				// Set Backdrop
+				fillRectangle(0,0,128,160,skyBlue);         // Sky
+				fillRectangle(0,60,128,160,soilBrown);      // Soil
+				fillRectangle(0,45,128,23,grassGreen);      // Grass
+				for (int i=8; i<120; i+=11) 
+				{			    // Bumpy grass
+					fillCircle(i,48,7,grassGreen);
+					fillCircle(i,64,7,grassGreen);
+				} // End for
+
+
+				// Title
+				printTextX2("Spudman!",5,5,0,skyBlue);
+
+				while (1) 
+				{
+					putImage(104,10,20,20,sun_1,0,0);       // Sun
+					putImage(56,120,34,40,spudman_D1,0,0);  // Spudman
+					putImage(80,100,18,13,slug_1,0,0);		// Left slug
+					putImage(20,90,18,13,slug_1,1,0);		// Right slug
+					delay(100);
+					putImage(104,10,20,20,sun_2,0,0);
+					putImage(56,120,34,40,spudman_D2,0,0);
+					putImage(80,100,18,13,slug_2,0,0);
+					putImage(20,90,18,13,slug_2,1,0);
+					delay(100);
+				} // End while
+
+				stage = 9;
+
+				break;
+			// End stage 0
+
+			// Pet Stage
+			case 1:
+				// Change backdrop
+			
+
+			// Summons SPUDMAN
+			//putImage(64,80,16,16,spudman_D1,0,0);
+
+				//Pass x and y as pointers to mvmt function, returns either 1 if moving 0 if idle
+				isMoving = mvmt(&x, &y, &oldx, &oldy);
+		
+				// if spud is moved hunger bar decreases 
+				if(isMoving)
+				{
+					hunger = hunger - 1;
+					printNumber(hunger,80,10,255,0);
+					printText("Hunger:",10,10,255,0);
+		
+					if (hunger == 0 && !isDead)
+					{
+						printText("Spuddy has starved",0,40,255,0);
+						printText("to death",40,50,255,0);
+						isDead = 1;	
+						break;
+					}
+				} // End if
+
+				break;
+			// End stage 1
+			
+			// Do Nothing (testing purposes)
+			case 9:
+
+				break;
+
+
+		if((GPIOB->IDR & (1<<5))==0)
+		{
+			hunger = hunger + FunGame(&x, &y, &oldx, &oldy);
+		}*/
