@@ -32,8 +32,33 @@
               "icon": "lucide-file",
               "title": "GameDesignDocument"
             }
+          },
+          {
+            "id": "c055ab0e4253edb7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Rubrics.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Rubrics"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -164,7 +189,7 @@
       "file-tree-alternative:File Tree Alternative Plugin": false
     }
   },
-  "active": "e7a7b303c61786dc",
+  "active": "c055ab0e4253edb7",
   "lastOpenFiles": [
     "GameDesignDocument.md",
     "Rubrics.md",
