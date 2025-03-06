@@ -530,6 +530,15 @@ void printNumber(uint16_t Number, uint16_t x, uint16_t y, uint16_t ForeColour, u
     Buffer[0] = Number % 10 + '0';
     printText(Buffer, x, y, ForeColour, BackColour);
 }
+void printTime(uint16_t num, uint16_t x, uint16_t y, uint16_t ForeColour, uint16_t BackColour)
+{
+        char buffer[3];
+        buffer[2] = 0;
+		buffer[1] = num % 10 + '0';
+		num = num / 10;
+		buffer[0] = num % 10 + '0';
+		printText(buffer,x,y,ForeColour,BackColour);
+}
 void printNumberX2(uint16_t Number, uint16_t x, uint16_t y, uint16_t ForeColour, uint16_t BackColour)
 {
      // This function converts the supplied number into a character string and then calls on puText to

@@ -5,6 +5,7 @@
 void initClock(void);
 void initSysTick(void);
 void SysTick_Handler(void);
+uint32_t millis(void);
 void delay(volatile uint32_t dly);
 void setupIO();
 int isInside(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint16_t px, uint16_t py);
@@ -13,6 +14,7 @@ void pinMode(GPIO_TypeDef *Port, uint32_t BitNumber, uint32_t Mode);
 int mvmt(uint16_t *, uint16_t *, uint16_t *, uint16_t *);
 int hungerBar(int,int);
 int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy);
+void updateDisplayTime(void);
 
 
 volatile uint32_t milliseconds;
@@ -46,7 +48,7 @@ int main()
 	int isMoving;
 	srand(time(NULL));
 
-	// what you call this?
+	//timing
 	initClock();
 	initSysTick();
 	setupIO();
@@ -55,6 +57,7 @@ int main()
 	//Gameplay starts:
 	while(1)
 	{
+		updateDisplayTime();
 		stage = 1;
 		if (stage == 0) {
 
@@ -117,6 +120,10 @@ void initSysTick(void)
 void SysTick_Handler(void)
 {
 	milliseconds++;
+}
+uint32_t millis(void)
+{
+	return milliseconds;
 }
 void initClock(void)
 {
@@ -196,6 +203,28 @@ void setupIO()
 	enablePullUp(GPIOB,5);
 	enablePullUp(GPIOA,11);
 	enablePullUp(GPIOA,8);
+}
+void updateDisplayTime(void)
+{
+	static uint32_t lastUpdate = 0;
+	uint32_t elapsedTime = millis();
+
+	if(elapsedTime - lastUpdate >= 1000)//update every second
+	{
+		lastUpdate = elapsedTime;
+		static uint32_t seconds = 0;
+		seconds++;
+
+		//convert to HH:MS:SS format
+		uint32_t hrs = (seconds / 3600) % 24;
+		uint32_t mins = (seconds / 60) % 60;
+		uint32_t secs = seconds % 60;
+
+		//convert hrs mins and secs to characters and print
+		printTime(hrs,10,140,255,0);
+		printTime(mins,25,140,255,0);
+		printTime(secs,40,140,255,0);
+	}
 }
 
 //mega efficient random movement algorithm FAANG level.
