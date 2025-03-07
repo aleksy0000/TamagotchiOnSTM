@@ -133,7 +133,7 @@ int main()
 			//hunger = hungerBar(hunger, isMoving);
 			if(isMoving == 1)
 			{
-				
+				hunger = hungerBar(hunger);
 			}
 			//check if dead
 			if (hunger == 0)
@@ -388,26 +388,26 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 {
 	int score = 0;
-	int j = 1;
+	int j = 2;
 
 	while(1)
 	{
 		*x = 5;
 		*y = 100;
-		putImage(64,100,18,13,slug_1,0,0);
+		putImage(64,120,18,13,slug_1,0,0);
 		printNumber(score,80,10,0,soilBrown);
 		printText("score:",10,10,0,soilBrown);
 		putImage(*x,*y,34,40,spudman_R1,0,0);
 
-		for(int i = 0; *x < 100; i++)
+		while(*x < 93)
 		{
 			*x = *x + j;
 			fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
 			putImage(*x,*y,34,40,spudman_R1,0,0);
-			putImage(64,100,18,13,slug_1,0,0);
+			putImage(64,120,18,13,slug_1,0,0);
 			delay(50);
 			putImage(*x,*y,34,40,spudman_R2,0,0);
-			putImage(64,100,18,13,slug_2,0,0);
+			putImage(64,120,18,13,slug_2,0,0);
 			delay(50);
 
 			//Jump 
@@ -422,10 +422,10 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 					}
 					fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
 					putImage(*x,*y,34,40,spudman_R1,0,0);
-					putImage(64,100,18,13,slug_1,0,0);
+					putImage(64,120,18,13,slug_1,0,0);
 					delay(50);
 					putImage(*x,*y,34,40,spudman_R2,0,0);
-					putImage(64,100,18,13,slug_2,0,0);
+					putImage(64,120,18,13,slug_2,0,0);
 					delay(50);
 				}
 				for(int i = 0; i < 25;i++)
@@ -437,16 +437,16 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 					}
 					fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
 					putImage(*x,*y,34,40,spudman_R1,0,0);
-					putImage(64,100,18,13,slug_1,0,0);
+					putImage(64,120,18,13,slug_1,0,0);
 					delay(50);
 					putImage(*x,*y,34,40,spudman_R2,0,0);
-					putImage(64,100,18,13,slug_2,0,0);
+					putImage(64,120,18,13,slug_2,0,0);
 					delay(50);
 				}
 				delay(100);	
 			}//end jump loop
 			
-			if (isInside(64,100,16,16,*x,*y) || isInside(64,100,16,16,*x+1,*y) || isInside(64,100,16,16,*x,*y+1) || isInside(64,100,16,16,*x+1,*y+1))
+			if (isInside(45,100,16,16,*x,*y) || isInside(45,100,16,16,*x+4,*y) || isInside(45,100,16,16,*x,*y+4) || isInside(45,100,16,16,*x+4,*y+4))
 			{	
 				return score;
 			}
@@ -454,11 +454,11 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 		score += 1;
 		if(score > 5)
 		{
-			j = 2;
+			j = 4;
 		}
 		else if(score > 10)
 		{
-			j = 3;
+			j = 8;
 		}
 		
 	}//end while(1)
