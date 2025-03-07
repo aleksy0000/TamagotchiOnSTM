@@ -112,6 +112,7 @@ int main()
 				if((GPIOB->IDR & (1<<5))==0)
 				{
 					stage = 1;
+					break;
 				}
 			} // End while
 		}
@@ -296,7 +297,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 	
 	// Movement
 	random_mvmt = 0 + rand() % 4;//randomise direction
-	random_mvmt_duration = 1 + rand() % 10;//randomise duration spent in that direction
+	random_mvmt_duration = 5 + rand() % 10;//randomise duration spent in that direction
 
 	///////////////////////START MVMT IF SEQUENCE/////////////////////////
 	// Move Down
@@ -304,7 +305,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 	{
 		for(int i = 0;i < random_mvmt_duration;i++)
 		{
-			if (*y < 140)//checks if position is at edge of screen
+			if (*y < 110)//checks if position is at edge of screen
 			{
 				*y = *y + 1;	
 				fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx= *x; *oldy= *y;
@@ -323,7 +324,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 	{			
 		for(int i = 0;i < random_mvmt_duration;i++)
 		{
-			if (*y > 16)//checks if position is at edge of screen
+			if (*y > 20)//checks if position is at edge of screen
 			{
 				*y = *y - 1;
 				fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
@@ -361,7 +362,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 	{	
 		for(int i = 0; i < random_mvmt_duration;i++)
 		{				
-			if (*x < 110)//checks if position is at edge of screen
+			if (*x < 100)//checks if position is at edge of screen
 			{
 				*x = *x + 1;
 				fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
@@ -391,8 +392,8 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 	while(1)
 	{
 		*x = 5;
-		*y = 80;
-		putImage(80,100,18,13,slug_1,0,0);
+		*y = 100;
+		putImage(64,100,18,13,slug_1,0,0);
 		printNumber(score,80,10,0,soilBrown);
 		printText("score:",10,10,0,soilBrown);
 		putImage(*x,*y,34,40,spudman_R1,0,0);
@@ -402,10 +403,10 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			*x = *x + j;
 			fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
 			putImage(*x,*y,34,40,spudman_R1,0,0);
-			putImage(80,100,18,13,slug_1,0,0);
+			putImage(64,100,18,13,slug_1,0,0);
 			delay(50);
 			putImage(*x,*y,34,40,spudman_R2,0,0);
-			putImage(80,100,18,13,slug_2,0,0);
+			putImage(64,100,18,13,slug_2,0,0);
 			delay(50);
 
 			//Jump 
@@ -420,10 +421,10 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 					}
 					fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
 					putImage(*x,*y,34,40,spudman_R1,0,0);
-					putImage(80,100,18,13,slug_1,0,0);
+					putImage(64,100,18,13,slug_1,0,0);
 					delay(50);
 					putImage(*x,*y,34,40,spudman_R2,0,0);
-					putImage(80,100,18,13,slug_2,0,0);
+					putImage(64,100,18,13,slug_2,0,0);
 					delay(50);
 				}
 				for(int i = 0; i < 25;i++)
@@ -435,16 +436,16 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 					}
 					fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
 					putImage(*x,*y,34,40,spudman_R1,0,0);
-					putImage(80,100,18,13,slug_1,0,0);
+					putImage(64,100,18,13,slug_1,0,0);
 					delay(50);
 					putImage(*x,*y,34,40,spudman_R2,0,0);
-					putImage(80,100,18,13,slug_2,0,0);
+					putImage(64,100,18,13,slug_2,0,0);
 					delay(50);
 				}
 				delay(100);	
 			}//end jump loop
 			
-			if (isInside(70,80,16,16,*x,*y) || isInside(70,80,16,16,*x+1,*y) || isInside(70,80,16,16,*x,*y+1) || isInside(70,80,16,16,*x+1,*y+1))
+			if (isInside(64,100,16,16,*x,*y) || isInside(64,100,16,16,*x+1,*y) || isInside(64,100,16,16,*x,*y+1) || isInside(64,100,16,16,*x+1,*y+1))
 			{	
 				return score;
 			}
