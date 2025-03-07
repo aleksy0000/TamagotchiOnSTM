@@ -49,10 +49,10 @@ int main()
 	int stage = 0;
 
 	// Fun Bar
-	int fun = 100;
+	//int fun = 100;
 	// Hunger
 	int hunger = 50;
-	int isDead;
+	//int isDead; not used atm
 
 	//position
 	uint16_t x = 50;
