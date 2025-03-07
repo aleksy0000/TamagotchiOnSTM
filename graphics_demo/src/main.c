@@ -20,7 +20,7 @@ int isInside(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint16_t px, uint
 void enablePullUp(GPIO_TypeDef *Port, uint32_t BitNumber);
 void pinMode(GPIO_TypeDef *Port, uint32_t BitNumber, uint32_t Mode);
 int mvmt(uint16_t *, uint16_t *, uint16_t *, uint16_t *);
-int hungerBar(int hngr, int moving);
+int hungerBar(int hngr);
 int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy);
 void updateDisplayTime(void);
 
@@ -130,7 +130,11 @@ int main()
 			isMoving = mvmt(&x, &y, &oldx, &oldy);
 		
 			// if spud is moved hunger bar decreases 
-			hunger = hungerBar(hunger, isMoving);
+			//hunger = hungerBar(hunger, isMoving);
+			if(isMoving == 1)
+			{
+				
+			}
 			//check if dead
 			if (hunger == 0)
 			{
@@ -159,15 +163,12 @@ int main()
 	return 0;
 }//end main
 
-int hungerBar(int hngr, int moving)
+int hungerBar(int hngr)
 {
-	if(moving) // if spud is moved hunger bar decreases 
-	{
-		hngr = hngr - 1;
-		printNumber(hngr,80,10,0,soilBrown);
-		printText("Hunger:",10,10,0,soilBrown);
-		return hngr;
-	}
+	hngr = hngr - 1;
+	printNumber(hngr,80,10,0,soilBrown);
+	printText("Hunger:",10,10,0,soilBrown);
+	return hngr;
 }
 
 void initSysTick(void)
