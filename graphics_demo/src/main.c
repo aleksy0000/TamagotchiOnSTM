@@ -553,7 +553,7 @@ int HungerGame(uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSpuddyX, uint1
 
 	}
 
-fillRectangle(0,0,128,160,soilBrown);
+	fillRectangle(0,0,128,160,soilBrown);
 	}
 	return score;
 }
