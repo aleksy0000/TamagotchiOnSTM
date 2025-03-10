@@ -21,7 +21,10 @@ void enablePullUp(GPIO_TypeDef *Port, uint32_t BitNumber);
 void pinMode(GPIO_TypeDef *Port, uint32_t BitNumber, uint32_t Mode);
 int mvmt(uint16_t *, uint16_t *, uint16_t *, uint16_t *);
 int hungerBar(int hngr);
+int funBar(int fun);
 int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy);
+int HungerGame(uint16_t *x, uint16_t *y, uint16_t *oldSpuddyX, u_int16_t *oldSpuddyY, uint16_t *oldx, uint16_t *oldy);
+int spudCord(uint16_t *x);
 void updateDisplayTime(void);
 
 
@@ -53,7 +56,8 @@ int main()
 	int stage = 0;
 
 	// Fun Bar
-	//int fun = 100;
+	int fun = 100;
+	
 	// Hunger
 	int hunger = 50;
 	//int isDead; not used atm
@@ -63,6 +67,8 @@ int main()
 	uint16_t y = 80;
 	uint16_t oldx = x;
 	uint16_t oldy = y;
+	uint16_t oldSpuddyX;
+	uint16_t oldSpuddyY;
 
 	//mvmt
 	int isMoving;
@@ -80,7 +86,14 @@ int main()
 	//Gameplay starts:
 	while(1)
 	{
+		//Pass x and y as pointers to mvmt function, returns either 1 if moving 0 if idle
+		isMoving = mvmt(&x, &y, &oldx, &oldy);
+		fun = funBar(fun);
+		
 		updateDisplayTime();
+
+		putImage(96,9,10,10,hungerIcon,0,0);
+		putImage(3,9,10,10,confetti,0,0);
 		//stage = 1; // Debugging purposes
 
 		if(stage == 0)
@@ -130,8 +143,12 @@ int main()
 			{
 				stage = 2;
 			}
-			//Pass x and y as pointers to mvmt function, returns either 1 if moving 0 if idle
-			isMoving = mvmt(&x, &y, &oldx, &oldy);
+
+			//Press up to play food game
+			if ((GPIOA ->IDR & (1<<8))==0)
+			{
+				stage = 3;
+			}
 		
 			// if spud is moved hunger bar decreases 
 			//hunger = hungerBar(hunger, isMoving);
@@ -158,9 +175,14 @@ int main()
 
 			stage = 1;
 		}
-		else if(stage == 3)
+		else if(stage == 3)//Hunger game
 		{
-			//nothing, placeholder for more games
+			//backdrop
+			fillRectangle(0,0,128,160,soilBrown);      // Soil
+		
+			hunger = hunger + HungerGame(&x, &y, &oldSpuddyX, &oldSpuddyY, &oldx, &oldy);
+
+			stage = 1;
 		}
 	}
 
@@ -170,9 +192,15 @@ int main()
 int hungerBar(int hngr)
 {
 	hngr = hngr - 1;
-	printNumber(hngr,80,10,0,soilBrown);
-	printText("Hunger:",10,10,0,soilBrown);
+	printDigit(hngr,108,10,0,soilBrown);
 	return hngr;
+}
+
+int funBar(int fun2)
+{
+	fun2 = fun2 -1;
+	printDigit(fun2,15,10,0,soilBrown);
+	return fun2;
 }
 
 void initSysTick(void)
@@ -281,14 +309,14 @@ void updateDisplayTime(void)
 		seconds++;
 
 		//convert to HH:MS:SS format
-		uint32_t hrs = (seconds / 3600) % 24;
+		//uint32_t hrs = (seconds / 3600) % 24;
 		uint32_t mins = (seconds / 60) % 60;
 		uint32_t secs = seconds % 60;
 
 		//convert hrs mins and secs to characters and print
-		printTime(hrs,10,140,0,soilBrown);
-		printTime(mins,25,140,0,soilBrown);
-		printTime(secs,40,140,0,soilBrown);
+		//printTime(hrs,10,140,0,soilBrown);
+		printTime(mins,53,10,0,soilBrown);
+		printTime(secs,68,10,0,soilBrown);
 	}
 }
 
@@ -452,6 +480,7 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			
 			if (isInside(45,100,16,16,*x,*y) || isInside(45,100,16,16,*x+4,*y) || isInside(45,100,16,16,*x,*y+4) || isInside(45,100,16,16,*x+4,*y+4))
 			{	
+				fillRectangle(0,0,128,160,soilBrown); 
 				return score;
 			}
 		}//end for(constant mvmt to the right)
@@ -466,8 +495,68 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 		}
 		
 	}//end while(1)
-	
 }//end FunGame()
+
+int HungerGame(uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSpuddyX, uint16_t *oldSpuddyY ,uint16_t *oldx, uint16_t *oldy)
+{
+	*spuddyX = 50;
+	*spuddyY = 110;
+	*oldSpuddyX = *spuddyX;
+	*oldSpuddyY = *spuddyY;
+	int score = 0;
+	int foodX;
+	int foodY = 10;
+	
+	int food1;
+
+	for(int round = 1; round <=5; round++)
+	{
+	foodX = 20 + (rand() % (80 - 20 + 1));//generate random x value for food postition 
+	food1 = 1;
+
+	while (food1 == 1)//Activate game
+		{
+		if((GPIOB->IDR & (1<<5))==0 && *spuddyX> 20)//Move left
+		{
+			*spuddyX -=	5;
+		}
+		else if ((GPIOB->IDR & (1<<4))==0 && *spuddyX < 180)//Move right 
+		{
+			*spuddyX += 5;
+		}
+
+		//Move food down
+		foodY += 5; 
+		
+		fillRectangle(*oldx,*oldy,20,20,soilBrown);
+		fillRectangle(*oldSpuddyX,*oldSpuddyY,34,40,soilBrown);
+
+		putImage(foodX,foodY,20,20,sun_2,0,0);
+		putImage(*spuddyX,*spuddyY,34,40,spudman_D1,0,0);
+
+		//Store old food positions
+		*oldx = foodX;
+		*oldy = foodY;
+		
+		
+		delay(100);
+
+		if(foodY >= 110)
+		{
+			if(foodX >= *spuddyX && foodX <= (*spuddyX + 34))
+			{
+				score++;
+				printText("+1",110,10,0,soilBrown);
+			}
+			food1 = 0; // Stop game
+		}
+
+	}
+
+fillRectangle(0,0,128,160,soilBrown);
+	}
+	return score;
+}
 
 //Jump if ((GPIOA->IDR & (1<<8))==0)  {if (*y>16)  {*y-=15;}}
 ///////////Old Stuff////////////

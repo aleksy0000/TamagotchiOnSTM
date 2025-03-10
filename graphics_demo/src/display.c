@@ -530,6 +530,20 @@ void printNumber(uint16_t Number, uint16_t x, uint16_t y, uint16_t ForeColour, u
     Buffer[0] = Number % 10 + '0';
     printText(Buffer, x, y, ForeColour, BackColour);
 }
+void printDigit(uint16_t Number, uint16_t x, uint16_t y, uint16_t ForeColour, uint16_t BackColour)
+{
+    // This function converts the last 3 digits of the supplied number into a character string
+    char Buffer[4]; // 3 digits + 1 null terminator
+    Buffer[3] = 0;  // Null terminator
+
+    Buffer[2] = (Number % 10) + '0';  // Last digit
+    Number /= 10;
+    Buffer[1] = (Number % 10) + '0';  // Second last digit
+    Number /= 10;
+    Buffer[0] = (Number % 10) + '0';  // Third last digit
+
+    printText(Buffer, x, y, ForeColour, BackColour);
+}
 void printTime(uint16_t num, uint16_t x, uint16_t y, uint16_t ForeColour, uint16_t BackColour)
 {
         char buffer[3];
