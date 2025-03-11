@@ -171,7 +171,7 @@ int main()
 			//backdrop
 			fillRectangle(0,0,128,160,soilBrown);      // Soil
 
-			hunger = hunger + FunGame(&x, &y, &oldx, &oldy);
+			fun = fun + FunGame(&x, &y, &oldx, &oldy);
 
 			stage = 1;
 		}
@@ -180,7 +180,7 @@ int main()
 			//backdrop
 			fillRectangle(0,0,128,160,soilBrown);      // Soil
 		
-			hunger = hunger + HungerGame(&x, &y, &oldSpuddyX, &oldSpuddyY, &oldx, &oldy);
+			hunger = 5*(hunger + HungerGame(&x, &y, &oldSpuddyX, &oldSpuddyY, &oldx, &oldy));
 
 			stage = 1;
 		}
@@ -499,62 +499,70 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 
 int HungerGame(uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSpuddyX, uint16_t *oldSpuddyY ,uint16_t *oldx, uint16_t *oldy)
 {
+	srand(time(0));
+
 	*spuddyX = 50;
 	*spuddyY = 110;
 	*oldSpuddyX = *spuddyX;
 	*oldSpuddyY = *spuddyY;
+
 	int score = 0;
 	int foodX;
 	int foodY = 10;
-	
 	int food1;
 
 	for(int round = 1; round <=5; round++)
 	{
-	foodX = 20 + (rand() % (80 - 20 + 1));//generate random x value for food postition 
-	food1 = 1;
-
-	while (food1 == 1)//Activate game
-		{
-		if((GPIOB->IDR & (1<<5))==0 && *spuddyX> 20)//Move left
-		{
-			*spuddyX -=	5;
-		}
-		else if ((GPIOB->IDR & (1<<4))==0 && *spuddyX < 180)//Move right 
-		{
-			*spuddyX += 5;
-		}
-
-		//Move food down
-		foodY += 5; 
-		
-		fillRectangle(*oldx,*oldy,20,20,soilBrown);
-		fillRectangle(*oldSpuddyX,*oldSpuddyY,34,40,soilBrown);
-
-		putImage(foodX,foodY,20,20,sun_2,0,0);
-		putImage(*spuddyX,*spuddyY,34,40,spudman_D1,0,0);
-
-		//Store old food positions
+		foodX = 20 + (rand() % (80 - 20 + 1));//generate random x value for food postition 
+		foodY = 10;
+		food1 = 1;
 		*oldx = foodX;
 		*oldy = foodY;
-		
-		
-		delay(100);
 
-		if(foodY >= 110)
+		while (food1 == 1)//Activate game
 		{
-			if(foodX >= *spuddyX && foodX <= (*spuddyX + 34))
+			if((GPIOB->IDR & (1<<5))==0 && *spuddyX> 20)//Move left
 			{
-				score++;
-				printText("+1",110,10,0,soilBrown);
+				*spuddyX -=	5;
 			}
-			food1 = 0; // Stop game
+			else if ((GPIOB->IDR & (1<<4))==0 && *spuddyX < 180)//Move right 
+			{
+				*spuddyX += 5;
+			}
+
+			//Move food down
+			foodY += 5; 
+			
+			fillRectangle(*oldx,*oldy,20,20,soilBrown);
+			fillRectangle(*oldSpuddyX,*oldSpuddyY,34,40,soilBrown);
+
+			putImage(foodX,foodY,20,20,sun_2,0,0);
+			putImage(*spuddyX,*spuddyY,34,40,spudman_D1,0,0);
+
+			//Store old food positions
+			*oldx = foodX;
+			*oldy = foodY;
+			*oldSpuddyX = *spuddyX;
+			*oldSpuddyY = *spuddyY;
+			
+			
+			delay(200);
+
+			if(foodY >= 110)
+			{
+				if(foodX >= *spuddyX && foodX <= (*spuddyX + 34))
+				{
+					score++;
+					printText("+1",110,10,0,soilBrown);
+					delay(500);
+					fillRectangle(110,10,20,20,soilBrown);
+				}
+				food1 = 0; // Stop game
+			}
 		}
-
 	}
-
 	fillRectangle(0,0,128,160,soilBrown);
-	}
+	
 	return score;
 }
 
