@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "display.h"
+#include "serial.h"
 
 // Colours
 #define skyBlue    RGBToWord(44,235,235)
@@ -26,6 +27,8 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy);
 int HungerGame(uint16_t *x, uint16_t *y, uint16_t *oldSpuddyX, u_int16_t *oldSpuddyY, uint16_t *oldx, uint16_t *oldy);
 int spudCord(uint16_t *x);
 void updateDisplayTime(void);
+void getName(char []);
+void dead(char []);
 
 
 volatile uint32_t milliseconds;
@@ -52,6 +55,10 @@ const uint16_t confetti[]   = {0,0,45911,0,24375,0,0,0,0,0,0,0,0,0,21809,45911,0
 
 int main()
 {
+	//save current pet name and alive time
+	char name[11]; //max name 10 characters
+	getName(name);
+
 	// Current Stage
 	int stage = 0;
 
@@ -159,8 +166,13 @@ int main()
 			//check if dead
 			if (hunger == 0)
 			{
+				dead(name);
+
 				printText("Spuddy has starved",0,40,0,soilBrown);
 				printText("to death",40,50,0,soilBrown);
+
+				delay(100);
+	
 				stage = 0;	
 			}
 		
@@ -188,6 +200,41 @@ int main()
 
 	return 0;
 }//end main
+void getName(char name[])
+{
+	int i = 0;
+	while(egetchar() != 0)
+	{
+		name[i] = egetchar();
+		i++;
+	}
+}
+void dead(char name[])
+{
+	//print name to terminal
+	eputs(name);
+
+	//print time to terminal
+	static uint32_t lastUpdate = 0;
+	uint32_t elapsedTime = millis();
+
+	if(elapsedTime - lastUpdate >= 1000)//update every second
+	{
+		lastUpdate = elapsedTime;
+		static uint32_t seconds = 0;
+		seconds++;
+
+		//convert to HH:MS:SS format
+		//uint32_t hrs = (seconds / 3600) % 24;
+		uint32_t mins = (seconds / 60) % 60;
+		uint32_t secs = seconds % 60;
+
+		//convert hrs mins and secs to characters and print
+		//printDecimal(hrs);
+		printDecimal(mins);
+		printDecimal(secs);
+	}
+}
 
 int hungerBar(int hngr)
 {
