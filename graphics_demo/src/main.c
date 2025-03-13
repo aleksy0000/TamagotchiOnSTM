@@ -31,10 +31,11 @@ void refreshScreen();
 void backdrop();
 
 int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy);
-int HungerGame(int hunger, uint16_t *x, uint16_t *y, uint16_t *oldSpuddyX, u_int16_t *oldSpuddyY, uint16_t *oldx, uint16_t *oldy);
+int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSpuddyX, uint16_t *oldSpuddyY ,uint16_t *oldx, uint16_t *oldy);
 void updateDisplayTime(void);
 void getName(char []);
 void dead(char []);
+void resetValues(int *fun, int *hunger);
 
 // Movement Function Signatures
 int movedUp(void);
@@ -96,7 +97,7 @@ int main()
 	int stage = 0;
 
 	// Fun Bar
-	int fun = 100;
+	int fun = 10;
 	
 	// Hunger
 	int hunger = 100;
@@ -117,6 +118,9 @@ int main()
 	initClock();
 	initSysTick();
 	setupIO();
+
+	//sound
+	initSound();
 	
 	// Set Inital Stage (on startup)
 	stage = 0;
@@ -228,23 +232,17 @@ int main()
 			if (hunger == 0 || fun == 0)
 			{
 				dead(name);
+				fillRectangle(0,0,128,160,soilBrown);
 
 				while(movedDown()!=0)
 				{
-					fillRectangle(0,0,128,160,SOILBROWN);
-					printText("Spuddy has starved",0,60,0,SOILBROWN);
-					printText("to death",40,70,0,SOILBROWN);
-					printText("YOU LOSE!",40,80,0,SOILBROWN);
+					printText("Spuddy has starved",0,60,0,soilBrown);
+					printText("to death",40,70,0,soilBrown);
+					printText("YOU LOSE!",40,80,0,soilBrown);
 					putImage(50,20,32,32,tombstone,0,0);
-					delay(2000);
-				
-				}	
-
-				// RESTART GAME
-				// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-				// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-				// restartGayyme();
-
+				}
+				resetValues(&fun,&hunger);
+				refresh = 0;
 			}
 		} // END STAGE 1
 
@@ -366,6 +364,13 @@ void SysTick_Handler(void)//music function
 	}
 }
 
+void resetValues(int *fun, int *hunger)
+{
+	*fun = 100;
+	*hunger = 100;
+	milliseconds = 0;
+}
+
 uint32_t millis(void)
 {
 	return milliseconds;
@@ -476,12 +481,11 @@ void updateDisplayTime(void)
 int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 {
 	// Movement Variables
-	int isMoving = 0;   // (0=stationary) (1=moving)
 	int random_mvmt;  // (0=down 1=up)  (2=left 3=right) !Default is 0!
 	int random_mvmt_duration;
 	
 	// Movement
-	random_mvmt = 0 + rand() % 4;//randomise direction
+	random_mvmt = 0 + rand() % 5;//randomise direction
 	random_mvmt_duration = 5 + rand() % 10;//randomise duration spent in that direction
 
 	///////////////////////START MVMT IF SEQUENCE/////////////////////////
@@ -500,8 +504,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 				delay(50);				
 			}
 		}//end if(duration)
-		isMoving = 1;
-		return isMoving;
+		return 1;
 	}//end if(direction)
 
 	// Move Up
@@ -519,8 +522,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 				delay(50);
 			}
 		}//end for(duration)
-		isMoving = 1;
-		return isMoving;
+		return 1;
 	}//end for(direction)
 
 	// Move Left
@@ -538,8 +540,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 				delay(50);
 			}	
 		}//end if(duration)	
-		isMoving = 1;
-		return isMoving;
+		return 1;
 	}//end if(direction)
 
 	// Move right
@@ -557,15 +558,15 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 				delay(50);
 			}
 		}//end if(duration)		
-		isMoving = 1;
-		return isMoving;		
+		return 1;		
 	}//end if(direction)
-
-	//Did not move(random_mvmt = 4)
 	else
 	{
-		return isMoving;
-	}//end else
+		//do nothing
+		putImage(*x,*y,34,40,spudman_D1,0,0);
+		delay(5000);
+		return 0;
+	}
 	///////////////////////END MVMT IF SEQUENCE/////////////////////////
 }//end mvmt function
 
@@ -598,7 +599,8 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			//Jump 
 			if (movedUp()==0)  
 			{
-				playNote(500);
+				stopNote();
+
 				for(int i = 0; i < 25;i++)
 				{
 					if(*x<100)
@@ -638,12 +640,12 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 				return score;
 			}
 		}//end for(constant mvmt to the right)
-		score += 1;
-		if(score > 5)
+		score += 10;
+		if(score > 30)
 		{
 			j = 4;
 		}
-		else if(score > 10)
+		else if(score > 60)
 		{
 			j = 8;
 		}
@@ -680,12 +682,16 @@ int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSp
 			if(movedLeft()==1 && *spuddyX> 20)//Move spuddy to the left
 			{
 				*spuddyX -=	5;
-				playNote(500);//play sound when moving
+				playNote(700);
+				delay(300);
+				stopNote();
 			}
 			else if (movedRight()==1 && *spuddyX < 180)//Move spuddy to the right 
 			{
 				*spuddyX += 5;
-				playNote(500);
+				playNote(700);
+				delay(300);
+				stopNote();
 			}
 
 			//Move food down
