@@ -167,13 +167,15 @@ int main()
 				// Animations
 				putImage(104,10,20,20,sun_1,0,0);       // Sun 			(animation 1)
 				putImage(47,120,34,40,spudman_D1,0,0);  // Spudman		(animation 1)
-				putImage(80,100,18,13,slug_1,0,0);		// Left slug 	(animation 1)
-				putImage(20,90,18,13,slug_1,1,0);		// Right slug 	(animation 1)
+				putImage(95,110,18,13,slug_1,0,0);		// Right slug 	(animation 1)
+				putImage(20,110,18,13,slug_1,1,0);		// Left slug 	(animation 1)
+				fillRectangle(35,74,55,26,RGBToWord(128,0,0));
+				printTextX2("Play",41,79,RGBToWord(256,256,256),RGBToWord(128,0,0));
 				delay(100);
 				putImage(104,10,20,20,sun_2,0,0);		// Sun 			(animation 2)
 				putImage(47,120,34,40,spudman_D2,0,0);	// Spudman 		(animation 2)
-				putImage(80,100,18,13,slug_2,0,0);		// Left slug 	(animation 2)
-				putImage(20,90,18,13,slug_2,1,0);		// Right slug 	(animation 2)
+				putImage(95,110,18,13,slug_2,0,0);		// Right slug 	(animation 2)
+				putImage(20,110,18,13,slug_2,1,0);		// Left slug 	(animation 2)
 				delay(100);
 				
 				// Press down to change to pet stage
