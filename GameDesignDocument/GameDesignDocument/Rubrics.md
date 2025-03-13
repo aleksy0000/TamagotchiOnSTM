@@ -8,10 +8,10 @@
 | Sprite design and animation              | 4 Points (4/3/2/1) | **YES**     |
 | Game status/HUD display/Score            | 1 Points (1/1/0/0) | **YES**     |
 | Main Menu                                | 1 Points (1/1/0/0) | **YES**     |
-| Ability to restart/replay                | 1 Points (1/1/0/0) | **Almost**  |
+| Ability to restart/replay                | 1 Points (1/1/0/0) | **YES**     |
 | Use of random numbers                    | 1 Points (1/1/0/0) | **YES**     |
 | Multiplayer or other novel feature       | 1 Points (1/1/0/0) | n/a         |
-| Use of serial port (I/O)                 | 4 Points (4/3/2/1) | **Almost**  |
+| Use of serial port (I/O)                 | 4 Points (4/3/2/1) | **YES**  |
 | Use of sound                             | 2 Points (2/1/0/0) | WIP         |
 | Demonstration video                      | 4 Points (4/3/2/1) | n/az        |
 gpiob 3
