@@ -110,6 +110,10 @@ int main()
 	
 	stage = -1; 
 
+	//background
+	fillRectangle(0,0,128,160,soilBrown); 
+	int refresh = 0;
+
 	//Gameplay starts:
 	while(1)
 	{
@@ -117,6 +121,8 @@ int main()
 
 		putImage(96,9,10,10,hungerIcon,0,0);
 		putImage(3,9,10,10,confetti,0,0);
+
+		//enter name stage
 		if (stage == -1)
 		{
 			fillRectangle(0,0,128,160,0);  
@@ -169,9 +175,12 @@ int main()
 		else if(stage == 1)
 		{
 			updateDisplayTime();
-
 			//background
-			fillRectangle(0,0,128,160,soilBrown); 
+			if(refresh == 0)
+			{
+				fillRectangle(0,0,128,160,soilBrown); 
+				refresh = 1;
+			}
 
 			//random movement
 			isMoving = mvmt(&x, &y, &oldx, &oldy);
@@ -192,12 +201,14 @@ int main()
 			if((GPIOB->IDR & (1<<5))==0)
 			{
 				stage = 2;
+				refresh = 0;
 			}
 
 			//Press up to play food game
 			if ((GPIOA ->IDR & (1<<8))==0)
 			{
 				stage = 3;
+				refresh = 0;
 			}
 		
 			//check if dead
