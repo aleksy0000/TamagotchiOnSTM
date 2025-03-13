@@ -7,9 +7,9 @@
 #include "musical_notes.h"
 
 // Colours
-#define skyBlue    RGBToWord(44,235,235)
-#define grassGreen RGBToWord(40,235,70)
-#define soilBrown  RGBToWord(105,43,0)
+#define SKYBLUE    RGBToWord(44,235,235)
+#define GRASSGREEN RGBToWord(40,235,70)
+#define SOILBROWN  RGBToWord(105,43,0)
 #define sunYellow  RGBToWord(240,230,45)
 
 // Function Signatures
@@ -28,6 +28,7 @@ int hungerBar(int hngr);
 int funBar(int fun);
 
 void refreshScreen();
+void backdrop();
 
 int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy);
 int HungerGame(int hunger, uint16_t *x, uint16_t *y, uint16_t *oldSpuddyX, u_int16_t *oldSpuddyY, uint16_t *oldx, uint16_t *oldy);
@@ -88,7 +89,7 @@ int main()
 	//serial comms
 	initSerial();
 
-	//save current pet name and alive time
+	// Save Current Pet Name and Alive Time
 	char name[11] = "\0"; //max name 10 characters, default = "Spuddy"
 
 	// Current Stage
@@ -120,10 +121,14 @@ int main()
 	// Set Inital Stage (on startup)
 	stage = 0;
 
-	// Gameplay starts:
+	//background
+	fillRectangle(0,0,128,160,SOILBROWN); 
+	int refresh = 0;
+
+	//Gameplay starts:
 	while(1)
 	{
-		// Serial Screen
+		//enter name stage
 		if (stage == -1)
 		{
 			// Refresh Screen
@@ -141,17 +146,17 @@ int main()
 			refreshScreen();
 
 			// Set Backdrop
-			fillRectangle(0,0,128,160,skyBlue);         // Sky
-			fillRectangle(0,60,128,160,soilBrown);      // Soil
-			fillRectangle(0,45,128,23,grassGreen);      // Grass
+			fillRectangle(0,0,128,160,SKYBLUE);         // Sky
+			fillRectangle(0,60,128,160,SOILBROWN);      // Soil
+			fillRectangle(0,45,128,23,GRASSGREEN);      // Grass
 			for (int i=8; i<120; i+=11)                 // Bumpy grass
 			{			    
-				fillCircle(i,48,7,grassGreen);
-				fillCircle(i,64,7,grassGreen);
+				fillCircle(i,48,7,GRASSGREEN);
+				fillCircle(i,64,7,GRASSGREEN);
 			} // End for
 
 			// Title
-			printTextX2("Spudman!",5,5,0,skyBlue);
+			printTextX2("Spudman!",5,5,0,SKYBLUE);
 
 			while (1) 
 			{ 
@@ -180,37 +185,43 @@ int main()
 		// Pet Stage
 		else if(stage == 1) 
 		{	
-			refreshScreen();
+			
 			updateDisplayTime();
 
-			// brown Backdrop
-			backdrop(); 
+			//background
+			if(refresh == 0)
+			{
+				backdrop();
+				fillRectangle(0,0,128,21,GRASSGREEN);
+				putImage(96,9,10,10,hungerIcon,0,0);
+				putImage(3,9,10,10,confetti,0,0); 
+				refresh = 1;
+			}
 
 			//random movement
 			isMoving = mvmt(&x, &y, &oldx, &oldy);
+			
 
-			//funbar decreases over time
-			fun = funBar(fun);
-
-			// if spud is moved hunger bar decreases 
 			if(isMoving == 1)
 			{
+				// If moving, decrease hunger
 				hunger = hungerBar(hunger);
+				// If moving, decrease fun
+				fun = funBar(fun);
 			}
-		
-			// Change backdrop
-			//fillRectangle(0,0,128,160,soilBrown);      // Soil
-			
+	
 			// Move Left to play Slug Jump
-			if(movedLeft==1)
+			if(movedLeft()==1)
 			{
 				stage = 2;
+				refresh = 0;
 			}
 
 			// Move Right to Play Sun Rays Extravaganza
-			if (moveRight()==1)
+			if (movedRight()==1)
 			{
 				stage = 3;
+				refresh = 0;
 			}
 		
 			// Check Dead (Out of hunger or Fun)
@@ -218,12 +229,12 @@ int main()
 			{
 				dead(name);
 
-				while(movedDown!=0)
+				while(movedDown()!=0)
 				{
-					fillRectangle(0,0,128,160,soilBrown);
-					printText("Spuddy has starved",0,60,0,soilBrown);
-					printText("to death",40,70,0,soilBrown);
-					printText("YOU LOSE!",40,80,0,soilBrown);
+					fillRectangle(0,0,128,160,SOILBROWN);
+					printText("Spuddy has starved",0,60,0,SOILBROWN);
+					printText("to death",40,70,0,SOILBROWN);
+					printText("YOU LOSE!",40,80,0,SOILBROWN);
 					putImage(50,20,32,32,tombstone,0,0);
 					delay(2000);
 				
@@ -241,7 +252,7 @@ int main()
 		else if(stage == 2)
 		{
 			//backdrop
-			fbackdrop();      // Soil
+			backdrop();      // Soil
 
 			fun += FunGame(&x, &y, &oldx, &oldy);
 
@@ -258,7 +269,8 @@ int main()
 
 			stage = 1;
 		} // END STAGE 3
-	}
+		 
+	}	
 
 	return 0;
 }//end main
@@ -304,14 +316,14 @@ void dead(char name[])
 int hungerBar(int hngr)
 {
 	hngr = hngr - 1;
-	printDigit(hngr,108,10,0,soilBrown);
+	printDigit(hngr,108,10,0,SOILBROWN);
 	return hngr;
 }
 
 int funBar(int fun2)
 {
 	fun2 = fun2 -1;
-	printDigit(fun2,15,10,0,soilBrown);
+	printDigit(fun2,15,10,0,SOILBROWN);
 	return fun2;
 }
 
@@ -455,8 +467,8 @@ void updateDisplayTime(void)
 
 		//convert hrs mins and secs to characters and print
 		//printTime(hrs,10,140,0,soilBrown);
-		printTime(mins,53,10,0,soilBrown);
-		printTime(secs,68,10,0,soilBrown);
+		printTime(mins,53,10,0,SOILBROWN);
+		printTime(secs,68,10,0,SOILBROWN);
 	}
 }
 
@@ -481,7 +493,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			if (*y < 110)//checks if position is at edge of screen
 			{
 				*y = *y + 1;	
-				fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx= *x; *oldy= *y;
+				fillRectangle(*oldx,*oldy,34,40,SOILBROWN); *oldx= *x; *oldy= *y;
 				putImage(*x,*y,34,40,spudman_D1,0,0);
 				delay(50);
 				putImage(*x,*y,34,40,spudman_D2,0,0);
@@ -500,7 +512,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			if (*y > 20)//checks if position is at edge of screen
 			{
 				*y = *y - 1;
-				fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
+				fillRectangle(*oldx,*oldy,34,40,SOILBROWN); *oldx=*x; *oldy=*y;
 				putImage(*x,*y,34,40,spudman_U1,0,0);
 				delay(50);
 				putImage(*x,*y,34,40,spudman_U2,0,0);
@@ -519,7 +531,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			if (*x > 10)//checks if position is at edge of screen
 			{
 				*x = *x - 1;
-				fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
+				fillRectangle(*oldx,*oldy,34,40,SOILBROWN); *oldx=*x; *oldy=*y;
 				putImage(*x,*y,34,40,spudman_R1,1,0);
 				delay(50);
 				putImage(*x,*y,34,40,spudman_R2,1,0);
@@ -538,7 +550,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			if (*x < 100)//checks if position is at edge of screen
 			{
 				*x = *x + 1;
-				fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
+				fillRectangle(*oldx,*oldy,34,40,SOILBROWN); *oldx=*x; *oldy=*y;
 				putImage(*x,*y,34,40,spudman_R1,0,0);
 				delay(50);
 				putImage(*x,*y,34,40,spudman_R2,0,0);
@@ -564,17 +576,18 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 
 	while(1)
 	{
+		fillRectangle(0,0,128,21,GRASSGREEN);
 		*x = 5;
 		*y = 100;
 		putImage(64,120,18,13,slug_1,0,0);
-		printNumber(score,80,10,0,soilBrown);
-		printText("score:",10,10,0,soilBrown);
+		printNumber(score,80,10,0,SOILBROWN);
+		printText("score:",10,10,0,SOILBROWN);
 		putImage(*x,*y,34,40,spudman_R1,0,0);
 
 		while(*x < 93)
 		{
 			*x = *x + j;
-			fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
+			fillRectangle(*oldx,*oldy,34,40,SOILBROWN); *oldx=*x; *oldy=*y;
 			putImage(*x,*y,34,40,spudman_R1,0,0);
 			putImage(64,120,18,13,slug_1,0,0);
 			delay(50);
@@ -583,7 +596,7 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			delay(50);
 
 			//Jump 
-			if ((GPIOA->IDR & (1<<8))==0)  
+			if (movedUp()==0)  
 			{
 				playNote(500);
 				for(int i = 0; i < 25;i++)
@@ -593,7 +606,7 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 						*x = *x + 1;
 						*y = *y - 1;
 					}
-					fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
+					fillRectangle(*oldx,*oldy,34,40,SOILBROWN); *oldx=*x; *oldy=*y;
 					putImage(*x,*y,34,40,spudman_R1,0,0);
 					putImage(64,120,18,13,slug_1,0,0);
 					delay(50);
@@ -608,7 +621,7 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 						*x = *x + 1;
 						*y = *y + 1;
 					}
-					fillRectangle(*oldx,*oldy,34,40,soilBrown); *oldx=*x; *oldy=*y;
+					fillRectangle(*oldx,*oldy,34,40,SOILBROWN); *oldx=*x; *oldy=*y;
 					putImage(*x,*y,34,40,spudman_R1,0,0);
 					putImage(64,120,18,13,slug_1,0,0);
 					delay(50);
@@ -621,7 +634,7 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			
 			if (isInside(45,100,16,16,*x,*y) || isInside(45,100,16,16,*x+4,*y) || isInside(45,100,16,16,*x,*y+4) || isInside(45,100,16,16,*x+4,*y+4))
 			{	
-				fillRectangle(0,0,128,160,soilBrown); 
+				fillRectangle(0,0,128,160,SOILBROWN); 
 				return score;
 			}
 		}//end for(constant mvmt to the right)
@@ -639,7 +652,8 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 }//end FunGame()
 
 int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSpuddyX, uint16_t *oldSpuddyY ,uint16_t *oldx, uint16_t *oldy)
-{
+{	
+	fillRectangle(0,0,128,21,GRASSGREEN);
 	hunger = 0;
 	srand(time(0));//Seed 
 
@@ -663,12 +677,12 @@ int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSp
 
 		while (food1 == 1)//Activate game
 		{
-			if((GPIOB->IDR & (1<<5))==0 && *spuddyX> 20)//Move spuddy to the left
+			if(movedLeft()==1 && *spuddyX> 20)//Move spuddy to the left
 			{
 				*spuddyX -=	5;
 				playNote(500);//play sound when moving
 			}
-			else if ((GPIOB->IDR & (1<<4))==0 && *spuddyX < 180)//Move spuddy to the right 
+			else if (movedRight()==1 && *spuddyX < 180)//Move spuddy to the right 
 			{
 				*spuddyX += 5;
 				playNote(500);
@@ -677,8 +691,8 @@ int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSp
 			//Move food down
 			foodY += 5; 
 			
-			fillRectangle(*oldx,*oldy,20,20,soilBrown);// clear previous postion of the food and spuddy when they move 
-			fillRectangle(*oldSpuddyX,*oldSpuddyY,34,40,soilBrown);
+			fillRectangle(*oldx,*oldy,20,20,SOILBROWN);// clear previous postion of the food and spuddy when they move 
+			fillRectangle(*oldSpuddyX,*oldSpuddyY,34,40,SOILBROWN);
 
 			putImage(foodX,foodY,20,20,sun_2,0,0);//Print new position of spuddy
 			putImage(*spuddyX,*spuddyY,34,40,spudman_D1,0,0);
@@ -699,9 +713,9 @@ int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSp
 				if(foodX >= *spuddyX && foodX <= (*spuddyX + 34))
 				{
 					score++;
-					printText("+1",110,10,0,soilBrown);
+					printText("+1",110,10,0,SOILBROWN);
 					delay(500);
-					fillRectangle(110,10,20,20,soilBrown);
+					fillRectangle(110,10,20,20,SOILBROWN);
 				}
 				food1 = 0; // Stop game
 			}
@@ -709,7 +723,7 @@ int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSp
 	}
 
 	//clear screen after game
-	fillRectangle(0,0,128,160,soilBrown);
+	fillRectangle(0,0,128,160,SOILBROWN);
 		//return hunger value 
 		if (score > 1)
 		{
@@ -722,6 +736,7 @@ int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSp
 		}
 }
 
+// Returns 1 If Down Button Pressed
 int movedDown(void) {
 	if ((GPIOA->IDR&(1<<11)) == 0) {
 		return 1;
@@ -732,6 +747,7 @@ int movedDown(void) {
 	}
 }
 
+// Returns 1 If Up Button Pressed
 int movedUp(void) {
 	if ((GPIOA->IDR&(1<<8)) == 0) {
 		return 1;
@@ -741,7 +757,7 @@ int movedUp(void) {
 		return 0;
 	}
 }
-
+// Returns 1 If Left Button Pressed
 int movedLeft(void) {
 	if ((GPIOB->IDR&(1<<5)) == 0) {
 		return 1;
@@ -752,6 +768,7 @@ int movedLeft(void) {
 	}
 }
 
+// Returns 1 If Right Button Pressed
 int movedRight(void) {
 	if ((GPIOB->IDR&(1<<4)) ==0 ) {
 		return 1;
@@ -767,8 +784,9 @@ void refreshScreen() {
 }
 
 void backdrop(void) {
-	fillRectangle(0,0,128,160,soilBrown);
+	fillRectangle(0,0,128,160,SOILBROWN);
 }
+
 //Jump if ((GPIOA->IDR & (1<<8))==0)  {if (*y>16)  {*y-=15;}}
 ///////////Old Stuff////////////
 	// Movement Code
