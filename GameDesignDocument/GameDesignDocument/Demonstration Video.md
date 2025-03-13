@@ -26,6 +26,26 @@
 - You can see your score/time here {point to middle}
 - Now, to take care of Spudman, have have to keep him happy and full. You can see his health bar here, {point to top left}, and his fun bar here {point to top right}
 - As Spudman takes a walk, you can see that he is getting unhappier and hungry!
-- To increase them, we can play fun little minigames.
+- To increase them, we can play fun little mini games.
 - {Point to bottom left and bottom right}
 - Lets hurry up before he dies!
+
+## Hunger Game
+- This mini game increased Spudmans Hunger bar
+- Turns out Spudman is a potato, and potatoes need sunlight to survive
+- Lets try catch as many sunlight as we can.
+- Using the left and right buttons, we can move Spudman towards the falling rays.
+- A total of 5 sun rays will come down. 
+- Catching more rays will give more food, so try to collect as many as we can.
+
+
+## Fun Game
+- Oh no, Spudman is becoming restless and unhappy, lets play the fun mini game.
+- Spudmans mortal enemy is slugs, so lets try jump over them.
+- Press up to jump.
+- For each slug you successfully jump over, we are rewarded points towards his fun bar.
+- If Spudman hits a slug, then the mini game ends.
+
+
+## Serial Output
+
