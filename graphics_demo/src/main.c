@@ -117,6 +117,8 @@ int main()
 				fillCircle(i,64,7,grassGreen);
 			} // End for
 
+			
+
 
 			// Title
 			printTextX2("Spudman!",5,5,0,skyBlue);
@@ -172,7 +174,6 @@ int main()
 			//check if dead
 			if (hunger == 0)
 			{
-<<<<<<< HEAD
 				fillRectangle(0,0,128,160,soilBrown);
 				printText("Spuddy has starved",0,60,0,soilBrown);
 				printText("to death",40,70,0,soilBrown);
@@ -180,15 +181,6 @@ int main()
 				putImage(50,20,32,32,tombstone,0,0);
 				delay(2000);
 
-=======
-				dead(name);
-
-				printText("Spuddy has starved",0,40,0,soilBrown);
-				printText("to death",40,50,0,soilBrown);
-
-				delay(100);
-	
->>>>>>> b709166b454d86b8f035c2485d76c2229d5e5755
 				stage = 0;	
 			}
 		
