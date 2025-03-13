@@ -62,9 +62,7 @@ int main()
 	initSerial();
 
 	//save current pet name and alive time
-	char name[11] = "Spuddy"; //max name 10 characters, default = "Spuddy"
-	initSerial();
-	//getName(name);
+	char name[11] = "\0"; //max name 10 characters, default = "Spuddy"
 
 	// Current Stage
 	int stage = 0;
@@ -93,20 +91,21 @@ int main()
 	initSysTick();
 	setupIO();
 	
-	stage = 1;
-	// Change backdrop
-	fillRectangle(0,0,128,160,soilBrown);  
+	stage = -1; 
 
 	//Gameplay starts:
 	while(1)
 	{
-		
-		updateDisplayTime();
-
 		putImage(96,9,10,10,hungerIcon,0,0);
 		putImage(3,9,10,10,confetti,0,0);
-
-		if(stage == 0)
+		if (stage == -1)
+		{
+			fillRectangle(0,0,128,160,0);  
+			printText("Enter Name:",0,60,255,0);
+			getName(name);
+			stage = 1;
+		}
+		else if(stage == 0)
 		{
 			// Set Backdrop
 			fillRectangle(0,0,128,160,skyBlue);         // Sky
@@ -147,10 +146,23 @@ int main()
 		}
 		else if(stage == 1)
 		{
-			isMoving = mvmt(&x, &y, &oldx, &oldy);
-			fun = funBar(fun);
-		
 			updateDisplayTime();
+
+			//background
+			fillRectangle(0,0,128,160,soilBrown); 
+
+			//random movement
+			isMoving = mvmt(&x, &y, &oldx, &oldy);
+
+			//funbar decreases over time
+			fun = funBar(fun);
+
+			// if spud is moved hunger bar decreases 
+			if(isMoving == 1)
+			{
+				hunger = hungerBar(hunger);
+			}
+		
 			// Change backdrop
 			//fillRectangle(0,0,128,160,soilBrown);      // Soil
 			
@@ -166,14 +178,8 @@ int main()
 				stage = 3;
 			}
 		
-			// if spud is moved hunger bar decreases 
-			//hunger = hungerBar(hunger, isMoving);
-			if(isMoving == 1)
-			{
-				hunger = hungerBar(hunger);
-			}
 			//check if dead
-			if (hunger == 0)
+			if (hunger == 0 || fun == 0)
 			{
 				dead(name);
 				while((GPIOB->IDR & (1<<5))!=0)
@@ -215,9 +221,17 @@ int main()
 void getName(char name[])
 {
 	int i = 0;
-	while(egetchar() != 0)
+	char temp = '\0';
+	
+	while(temp != '\n')
 	{
 		name[i] = egetchar();
+		temp = name[i];
+		if(temp != '\n')
+		{
+			eputchar(name[i]);
+			printText(name,0,80,255,0);
+		}
 		i++;
 	}
 }
