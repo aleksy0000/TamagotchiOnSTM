@@ -107,6 +107,9 @@ int main()
 	initClock();
 	initSysTick();
 	setupIO();
+
+	//sound
+	initSound();
 	
 	stage = -1; 
 
@@ -114,9 +117,9 @@ int main()
 	while(1)
 	{
 		updateDisplayTime();
-
 		putImage(96,9,10,10,hungerIcon,0,0);
 		putImage(3,9,10,10,confetti,0,0);
+
 		if (stage == -1)
 		{
 			fillRectangle(0,0,128,160,0);  
@@ -562,7 +565,8 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			//Jump 
 			if ((GPIOA->IDR & (1<<8))==0)  
 			{
-				playNote(500);
+				stopNote();
+
 				for(int i = 0; i < 25;i++)
 				{
 					if(*x<100)
@@ -643,12 +647,16 @@ int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSp
 			if((GPIOB->IDR & (1<<5))==0 && *spuddyX> 20)//Move spuddy to the left
 			{
 				*spuddyX -=	5;
-				playNote(500);//play sound when moving
+				playNote(700);
+				delay(300);
+				stopNote();
 			}
 			else if ((GPIOB->IDR & (1<<4))==0 && *spuddyX < 180)//Move spuddy to the right 
 			{
 				*spuddyX += 5;
-				playNote(500);
+				playNote(700);
+				delay(300);
+				stopNote();
 			}
 
 			//Move food down

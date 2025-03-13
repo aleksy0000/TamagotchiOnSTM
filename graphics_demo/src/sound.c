@@ -1,5 +1,6 @@
 #include <stm32f031x6.h>
 #include "musical_notes.h"
+void stopNote();
 void pinMode(GPIO_TypeDef *Port, uint32_t BitNumber, uint32_t Mode);
 void playNote(uint32_t Freq)
 {	
@@ -23,4 +24,10 @@ void initSound()
 	TIM14->ARR = (48000000UL/(uint32_t)(TIM14->PSC))/((uint32_t)C4);
 	TIM14->CCR1 = TIM14->ARR/2;	
 	TIM14->CNT = 0;
+}
+void stopNote() 
+{
+    TIM14->CR1 &= ~(1 << 0); // Disable the timer
+    TIM14->CCR1 = 0;         // Set compare value to 0 (stop PWM)
+    TIM14->CNT = 0;          // Reset counter (optional)
 }
