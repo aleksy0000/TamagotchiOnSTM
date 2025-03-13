@@ -74,7 +74,6 @@ int main()
 	
 	// Hunger
 	int hunger = 3;
-	//int isDead; not used atm
 
 	//position
 	uint16_t x = 50;
@@ -93,14 +92,15 @@ int main()
 	initSysTick();
 	setupIO();
 	
-	stage = 1;
+	// Set Stage
+	stage = 0;
+
 	// Change backdrop
 	fillRectangle(0,0,128,160,soilBrown);  
 
 	//Gameplay starts:
 	while(1)
 	{
-		
 		updateDisplayTime();
 
 		putImage(96,9,10,10,hungerIcon,0,0);
@@ -118,21 +118,18 @@ int main()
 				fillCircle(i,64,7,grassGreen);
 			} // End for
 
-			
-
-
 			// Title
 			printTextX2("Spudman!",5,5,0,skyBlue);
 
 			while (1) 
-			{
+			{ 
 				putImage(104,10,20,20,sun_1,0,0);       // Sun
-				putImage(56,120,34,40,spudman_D1,0,0);  // Spudman
+				putImage(47,120,34,40,spudman_D1,0,0);  // Spudman
 				putImage(80,100,18,13,slug_1,0,0);		// Left slug
 				putImage(20,90,18,13,slug_1,1,0);		// Right slug
 				delay(100);
 				putImage(104,10,20,20,sun_2,0,0);
-				putImage(56,120,34,40,spudman_D2,0,0);
+				putImage(47,120,34,40,spudman_D2,0,0);
 				putImage(80,100,18,13,slug_2,0,0);
 				putImage(20,90,18,13,slug_2,1,0);
 				delay(100);
@@ -145,7 +142,8 @@ int main()
 				}
 			} // End while
 		}
-		else if(stage == 1)
+
+		else if(stage == 1) // Pet Stage
 		{
 			isMoving = mvmt(&x, &y, &oldx, &oldy);
 			fun = funBar(fun);
@@ -184,21 +182,26 @@ int main()
 					printText("YOU LOSE!",40,80,0,soilBrown);
 					putImage(50,20,32,32,tombstone,0,0);
 					delay(2000);
-
+				
 				}
+
+				// Restart Spudmans Values
+				hunger=0;
+				fun=0;
+				stage=0;
 			}
-		
-		}
+		} // END STAGE 1
+
 		else if(stage == 2)//Dino Game
 		{
-
 			//backdrop
 			fillRectangle(0,0,128,160,soilBrown);      // Soil
 
 			fun = fun + FunGame(&x, &y, &oldx, &oldy);
 
 			stage = 1;
-		}
+		} // END STAGE 2
+
 		else if(stage == 3)//Hunger game
 		{
 			//backdrop
@@ -207,11 +210,12 @@ int main()
 			hunger = HungerGame(hunger,&x, &y, &oldSpuddyX, &oldSpuddyY, &oldx, &oldy);
 
 			stage = 1;
-		}
+		} // END STAGE 3
 	}
 
 	return 0;
 }//end main
+
 void getName(char name[])
 {
 	int i = 0;
