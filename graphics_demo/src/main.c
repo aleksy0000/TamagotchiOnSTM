@@ -3,6 +3,8 @@
 #include <time.h>
 #include "display.h"
 #include "serial.h"
+#include "sound.h"
+#include "musical_notes.h"
 
 // Colours
 #define skyBlue    RGBToWord(44,235,235)
@@ -20,18 +22,43 @@ void setupIO();
 int isInside(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint16_t px, uint16_t py);
 void enablePullUp(GPIO_TypeDef *Port, uint32_t BitNumber);
 void pinMode(GPIO_TypeDef *Port, uint32_t BitNumber, uint32_t Mode);
+
 int mvmt(uint16_t *, uint16_t *, uint16_t *, uint16_t *);
 int hungerBar(int hngr);
 int funBar(int fun);
+
+void refreshScreen();
+
 int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy);
 int HungerGame(int hunger, uint16_t *x, uint16_t *y, uint16_t *oldSpuddyX, u_int16_t *oldSpuddyY, uint16_t *oldx, uint16_t *oldy);
-int spudCord(uint16_t *x);
 void updateDisplayTime(void);
 void getName(char []);
 void dead(char []);
 
+// Movement Function Signatures
+int movedUp(void);
+int movedDown(void);
+int movedLeft(void);
+int movedRight(void);
+
+
 
 volatile uint32_t milliseconds;
+uint32_t my_tune_notes[]={A4,C3,B5,D3,F2};
+uint32_t my_tune_times[]={200,100,300,200,500};
+//Variables to handle background sound
+uint32_t * background_tune_notes;
+uint32_t * background_tune_times;
+uint32_t background_note_count;
+uint32_t background_tune_repeat;
+
+void playBackgroundTune(uint32_t * notes, uint32_t * times, uint32_t count, uint32_t repeat)
+{
+	background_tune_notes = notes;
+	background_tune_times = times;
+	background_note_count = count;
+	background_tune_repeat = repeat; 
+}
 
 // Spudman Animations
 const uint16_t spudman_R1[] = {27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,0,0,0,0,0,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,28510,28510,28510,28510,28510,0,0,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,0,0,0,28510,28510,28510,28510,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,0,0,28510,28510,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,28510,28510,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,0,0,0,0,0,0,28510,28510,0,0,0,0,0,0,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,0,0,0,0,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,61185,61185,24438,24438,24438,24438,24438,24438,24438,24438,24438,24438,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,61185,61185,24438,24438,24438,24438,24438,24438,24438,24438,24438,24438,61185,61185,0,0,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,24438,24438,24438,24438,24438,24438,65374,65374,65374,65374,65374,65374,65374,65374,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,0,0,61185,61185,24438,24438,24438,24438,24438,24438,65374,65374,65374,65374,65374,65374,65374,65374,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,24438,24438,24438,24438,40766,40766,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,24438,24438,24438,24438,40766,40766,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,61185,61185,0,0,0,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,24438,24438,24438,24438,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,0,0,0,61185,61185,24438,24438,24438,24438,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,24438,24438,24438,24438,65374,65374,65374,65374,65374,65374,65374,65374,0,0,65374,65374,40766,40766,15437,15437,61185,61185,0,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,24438,24438,24438,24438,65374,65374,65374,65374,65374,65374,65374,65374,0,0,65374,65374,40766,40766,15437,15437,61185,61185,0,27905,27905,27905,27905,27905,27905,0,61185,61185,24438,24438,24438,24438,65374,65374,65374,65374,40766,40766,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,0,0,61185,61185,0,27905,27905,27905,27905,27905,27905,0,61185,61185,24438,24438,24438,24438,65374,65374,65374,65374,40766,40766,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,0,0,61185,61185,0,27905,27905,27905,27905,27905,27905,0,61185,61185,24438,24438,24438,24438,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,15437,15437,61185,61185,0,27905,27905,27905,27905,27905,27905,0,61185,61185,24438,24438,24438,24438,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,15437,15437,61185,61185,0,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,40766,40766,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,0,0,65374,65374,65374,65374,15437,15437,61185,61185,0,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,40766,40766,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,0,0,65374,65374,65374,65374,15437,15437,61185,61185,0,27905,27905,27905,27905,27905,27905,0,0,0,61185,61185,24438,24438,65374,65374,65374,65374,65374,65374,40766,40766,65374,65374,65374,65374,0,0,0,0,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,24438,24438,65374,65374,65374,65374,65374,65374,40766,40766,65374,65374,65374,65374,0,0,0,0,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,15437,15437,15437,15437,61185,61185,0,0,0,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,65374,15437,15437,15437,15437,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,0,0,61185,61185,61185,61185,61185,61185,15437,15437,15437,15437,15437,15437,15437,15437,15437,15437,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,61185,61185,15437,15437,15437,15437,15437,15437,15437,15437,15437,15437,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,0,0,0,0,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,0,0,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,0,0,0,0,0,0,0,0,61185,61185,0,0,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,0,27905,27905,27905,27905,27905,27905,0,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,0,0,0,0,0,27905,27905,0,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,29202,29202,29202,29202,0,27905,27905,0,61185,61185,0,0,0,0,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,29202,29202,29202,29202,0,27905,27905,0,61185,61185,29202,29202,29202,29202,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,61185,61185,61185,61185,61185,61185,0,27905,27905,0,61185,61185,29202,29202,29202,29202,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,0,0,0,0,0,0,0,27905,27905,0,61185,61185,61185,61185,61185,61185,0,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,27905,0,0,0,0,0,0,0,0,27905,27905,27905,27905,};
@@ -62,9 +89,7 @@ int main()
 	initSerial();
 
 	//save current pet name and alive time
-	char name[11] = "Spuddy"; //max name 10 characters, default = "Spuddy"
-	initSerial();
-	//getName(name);
+	char name[11] = "\0"; //max name 10 characters, default = "Spuddy"
 
 	// Current Stage
 	int stage = 0;
@@ -73,9 +98,9 @@ int main()
 	int fun = 100;
 	
 	// Hunger
-	int hunger = 3;
+	int hunger = 100;
 
-	//position
+	// Position
 	uint16_t x = 50;
 	uint16_t y = 80;
 	uint16_t oldx = x;
@@ -92,28 +117,35 @@ int main()
 	initSysTick();
 	setupIO();
 	
-	// Set Stage
+	// Set Inital Stage (on startup)
 	stage = 0;
 
-	// Change backdrop
-	fillRectangle(0,0,128,160,soilBrown);  
-
-	//Gameplay starts:
+	// Gameplay starts:
 	while(1)
 	{
-		updateDisplayTime();
-
-		putImage(96,9,10,10,hungerIcon,0,0);
-		putImage(3,9,10,10,confetti,0,0);
-
-		if(stage == 0)
+		// Serial Screen
+		if (stage == -1)
 		{
+			// Refresh Screen
+			refreshScreen();
+	
+			printText("Enter Name:",0,60,255,0);
+			getName(name);
+			stage = 1;
+		} // End Serial Screen
+
+		// Start Menu
+		else if(stage == 0)
+		{	
+			// Refresh Screen
+			refreshScreen();
+
 			// Set Backdrop
 			fillRectangle(0,0,128,160,skyBlue);         // Sky
 			fillRectangle(0,60,128,160,soilBrown);      // Soil
 			fillRectangle(0,45,128,23,grassGreen);      // Grass
-			for (int i=8; i<120; i+=11) 
-			{			    // Bumpy grass
+			for (int i=8; i<120; i+=11)                 // Bumpy grass
+			{			    
 				fillCircle(i,48,7,grassGreen);
 				fillCircle(i,64,7,grassGreen);
 			} // End for
@@ -123,58 +155,70 @@ int main()
 
 			while (1) 
 			{ 
-				putImage(104,10,20,20,sun_1,0,0);       // Sun
-				putImage(47,120,34,40,spudman_D1,0,0);  // Spudman
-				putImage(80,100,18,13,slug_1,0,0);		// Left slug
-				putImage(20,90,18,13,slug_1,1,0);		// Right slug
+				// Animations
+				putImage(104,10,20,20,sun_1,0,0);       // Sun 			(animation 1)
+				putImage(47,120,34,40,spudman_D1,0,0);  // Spudman		(animation 1)
+				putImage(80,100,18,13,slug_1,0,0);		// Left slug 	(animation 1)
+				putImage(20,90,18,13,slug_1,1,0);		// Right slug 	(animation 1)
 				delay(100);
-				putImage(104,10,20,20,sun_2,0,0);
-				putImage(47,120,34,40,spudman_D2,0,0);
-				putImage(80,100,18,13,slug_2,0,0);
-				putImage(20,90,18,13,slug_2,1,0);
+				putImage(104,10,20,20,sun_2,0,0);		// Sun 			(animation 2)
+				putImage(47,120,34,40,spudman_D2,0,0);	// Spudman 		(animation 2)
+				putImage(80,100,18,13,slug_2,0,0);		// Left slug 	(animation 2)
+				putImage(20,90,18,13,slug_2,1,0);		// Right slug 	(animation 2)
 				delay(100);
-
-				//Press left to change to pet stage
-				if((GPIOB->IDR & (1<<5))==0)
+				
+				// Press down to change to pet stage
+				if(movedDown()==1)
 				{
 					stage = 1;
 					break;
-				}
+				} // End if
+
 			} // End while
-		}
+		} // End Start menu
 
-		else if(stage == 1) // Pet Stage
-		{
-			isMoving = mvmt(&x, &y, &oldx, &oldy);
-			fun = funBar(fun);
-		
+		// Pet Stage
+		else if(stage == 1) 
+		{	
+			refreshScreen();
 			updateDisplayTime();
-			// Change backdrop
-			//fillRectangle(0,0,128,160,soilBrown);      // Soil
-			
-			//Press left to play dino game
-			if((GPIOB->IDR & (1<<5))==0)
-			{
-				stage = 2;
-			}
 
-			//Press up to play food game
-			if ((GPIOA ->IDR & (1<<8))==0)
-			{
-				stage = 3;
-			}
-		
+			// brown Backdrop
+			backdrop(); 
+
+			//random movement
+			isMoving = mvmt(&x, &y, &oldx, &oldy);
+
+			//funbar decreases over time
+			fun = funBar(fun);
+
 			// if spud is moved hunger bar decreases 
-			//hunger = hungerBar(hunger, isMoving);
 			if(isMoving == 1)
 			{
 				hunger = hungerBar(hunger);
 			}
-			//check if dead
-			if (hunger == 0)
+		
+			// Change backdrop
+			//fillRectangle(0,0,128,160,soilBrown);      // Soil
+			
+			// Move Left to play Slug Jump
+			if(movedLeft==1)
+			{
+				stage = 2;
+			}
+
+			// Move Right to Play Sun Rays Extravaganza
+			if (moveRight()==1)
+			{
+				stage = 3;
+			}
+		
+			// Check Dead (Out of hunger or Fun)
+			if (hunger == 0 || fun == 0)
 			{
 				dead(name);
-				while((GPIOB->IDR & (1<<5))!=0)
+
+				while(movedDown!=0)
 				{
 					fillRectangle(0,0,128,160,soilBrown);
 					printText("Spuddy has starved",0,60,0,soilBrown);
@@ -183,29 +227,32 @@ int main()
 					putImage(50,20,32,32,tombstone,0,0);
 					delay(2000);
 				
-				}
+				}	
 
-				// Restart Spudmans Values
-				hunger=0;
-				fun=0;
-				stage=0;
+				// RESTART GAME
+				// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+				// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+				// restartGayyme();
+
 			}
 		} // END STAGE 1
 
-		else if(stage == 2)//Dino Game
+		// Slug jump
+		else if(stage == 2)
 		{
 			//backdrop
-			fillRectangle(0,0,128,160,soilBrown);      // Soil
+			fbackdrop();      // Soil
 
-			fun = fun + FunGame(&x, &y, &oldx, &oldy);
+			fun += FunGame(&x, &y, &oldx, &oldy);
 
 			stage = 1;
 		} // END STAGE 2
 
-		else if(stage == 3)//Hunger game
+		// Sun Ray Extravaganza
+		else if(stage == 3)
 		{
-			//backdrop
-			fillRectangle(0,0,128,160,soilBrown);      // Soil
+			// Brown Backdrop
+			backdrop();
 		
 			hunger = HungerGame(hunger,&x, &y, &oldSpuddyX, &oldSpuddyY, &oldx, &oldy);
 
@@ -219,9 +266,17 @@ int main()
 void getName(char name[])
 {
 	int i = 0;
-	while(egetchar() != 0)
+	char temp = '\0';
+	
+	while(temp != '\n')
 	{
 		name[i] = egetchar();
+		temp = name[i];
+		if(temp != '\n')
+		{
+			eputchar(name[i]);
+			printText(name,0,80,255,0);
+		}
 		i++;
 	}
 }
@@ -267,10 +322,38 @@ void initSysTick(void)
 	SysTick->VAL = 10;
 	__asm(" cpsie i "); // enable interrupts
 }
-void SysTick_Handler(void)
+void SysTick_Handler(void)//music function 
 {
+	static int index = 0;
+	static int current_note_time=0;
 	milliseconds++;
+	if (background_tune_notes != 0)
+	{
+		if (current_note_time == 0)
+		{
+			index++;
+			if (index >= background_note_count)
+			{
+				if (background_tune_repeat != 0)
+				{
+					index = 0;
+				}
+				else
+				{
+					background_tune_notes=0;
+					playNote(0);
+				}
+			}
+			current_note_time = background_tune_times[index];
+			playNote(background_tune_notes[index]);
+		}
+		else
+		{
+			current_note_time--;
+		}
+	}
 }
+
 uint32_t millis(void)
 {
 	return milliseconds;
@@ -502,6 +585,7 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			//Jump 
 			if ((GPIOA->IDR & (1<<8))==0)  
 			{
+				playNote(500);
 				for(int i = 0; i < 25;i++)
 				{
 					if(*x<100)
@@ -574,7 +658,7 @@ int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSp
 		foodX = 20 + (rand() % (80 - 20 + 1));//generate random x value for food postition 
 		foodY = 10;
 		food1 = 1;
-		*oldx = foodX; // remember foods previous position to clear the 
+		*oldx = foodX; //remember foods previous position 
 		*oldy = foodY;
 
 		while (food1 == 1)//Activate game
@@ -582,10 +666,12 @@ int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSp
 			if((GPIOB->IDR & (1<<5))==0 && *spuddyX> 20)//Move spuddy to the left
 			{
 				*spuddyX -=	5;
+				playNote(500);//play sound when moving
 			}
 			else if ((GPIOB->IDR & (1<<4))==0 && *spuddyX < 180)//Move spuddy to the right 
 			{
 				*spuddyX += 5;
+				playNote(500);
 			}
 
 			//Move food down
@@ -636,15 +722,65 @@ int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSp
 		}
 }
 
+int movedDown(void) {
+	if ((GPIOA->IDR&(1<<11)) == 0) {
+		return 1;
+	}
+
+	else {
+		return 0;
+	}
+}
+
+int movedUp(void) {
+	if ((GPIOA->IDR&(1<<8)) == 0) {
+		return 1;
+	}
+
+	else {
+		return 0;
+	}
+}
+
+int movedLeft(void) {
+	if ((GPIOB->IDR&(1<<5)) == 0) {
+		return 1;
+	}
+
+	else {
+		return 0;
+	}
+}
+
+int movedRight(void) {
+	if ((GPIOB->IDR&(1<<4)) ==0 ) {
+		return 1;
+	}
+
+	else {
+		return 0;
+	}
+}
+
+void refreshScreen() {
+	fillRectangle(0,0,128,160,0);
+}
+
+void backdrop(void) {
+	fillRectangle(0,0,128,160,soilBrown);
+}
 //Jump if ((GPIOA->IDR & (1<<8))==0)  {if (*y>16)  {*y-=15;}}
 ///////////Old Stuff////////////
 	// Movement Code
 		// Move down
 		//if ((GPIOA->IDR & (1<<11))==0) {if (y<140) {y+=1; isMoving=1; direction=0; invertH=0;}}
+
 		// Move up
 		//if ((GPIOA->IDR & (1<<8))==0)  {if (y>16)  {y-=1; isMoving=1; direction=1; invertH=0;}}
+
 		// Move left
 		//if ((GPIOB->IDR & (1<<5))==0)  {if (x>10)  {x-=1; isMoving=1; direction=2; invertH=1;}}
+		
 		// Move right
 		//if ((GPIOB->IDR & (1<<4))==0)  {if (x<110) {x+=1; isMoving=1; direction=3; invertH=0;}}
 	
