@@ -28,10 +28,11 @@ int hungerBar(int hngr);
 int funBar(int fun);
 
 int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy);
-int HungerGame(int hunger, uint16_t *x, uint16_t *y, uint16_t *oldSpuddyX, u_int16_t *oldSpuddyY, uint16_t *oldx, uint16_t *oldy);
+int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSpuddyX, uint16_t *oldSpuddyY ,uint16_t *oldx, uint16_t *oldy);
 void updateDisplayTime(void);
 void getName(char []);
 void dead(char []);
+void resetValues(int *fun, int *hunger);
 
 volatile uint32_t milliseconds;
 uint32_t my_tune_notes[]={A4,C3,B5,D3,F2};
@@ -85,10 +86,10 @@ int main()
 	int stage = 0;
 
 	// Fun Bar
-	int fun = 100;
+	int fun = 10;
 	
 	// Hunger
-	int hunger = 50;
+	int hunger = 10;
 	//int isDead; not used atm
 
 	//position
@@ -113,13 +114,18 @@ int main()
 	
 	stage = -1; 
 
+	//background
+	fillRectangle(0,0,128,160,soilBrown); 
+	int refresh = 0;
+
 	//Gameplay starts:
 	while(1)
 	{
-		updateDisplayTime();
+
 		putImage(96,9,10,10,hungerIcon,0,0);
 		putImage(3,9,10,10,confetti,0,0);
 
+		//enter name stage
 		if (stage == -1)
 		{
 			fillRectangle(0,0,128,160,0);  
@@ -138,9 +144,6 @@ int main()
 				fillCircle(i,48,7,grassGreen);
 				fillCircle(i,64,7,grassGreen);
 			} // End for
-
-			
-
 
 			// Title
 			printTextX2("Spudman!",5,5,0,skyBlue);
@@ -172,9 +175,12 @@ int main()
 		else if(stage == 1)
 		{
 			updateDisplayTime();
-
 			//background
-			fillRectangle(0,0,128,160,soilBrown); 
+			if(refresh == 0)
+			{
+				fillRectangle(0,0,128,160,soilBrown); 
+				refresh = 1;
+			}
 
 			//random movement
 			isMoving = mvmt(&x, &y, &oldx, &oldy);
@@ -195,28 +201,30 @@ int main()
 			if((GPIOB->IDR & (1<<5))==0)
 			{
 				stage = 2;
+				refresh = 0;
 			}
 
 			//Press up to play food game
 			if ((GPIOA ->IDR & (1<<8))==0)
 			{
 				stage = 3;
+				refresh = 0;
 			}
 		
 			//check if dead
 			if (hunger == 0 || fun == 0)
 			{
 				dead(name);
+				fillRectangle(0,0,128,160,soilBrown);
 				while((GPIOB->IDR & (1<<5))!=0)
 				{
-					fillRectangle(0,0,128,160,soilBrown);
 					printText("Spuddy has starved",0,60,0,soilBrown);
 					printText("to death",40,70,0,soilBrown);
 					printText("YOU LOSE!",40,80,0,soilBrown);
 					putImage(50,20,32,32,tombstone,0,0);
-					delay(2000);
-
 				}
+				resetValues(&fun,&hunger);
+				refresh = 0;
 			}
 		
 		}
@@ -332,6 +340,13 @@ void SysTick_Handler(void)//music function
 			current_note_time--;
 		}
 	}
+}
+
+void resetValues(int *fun, int *hunger)
+{
+	*fun = 100;
+	*hunger = 100;
+	milliseconds = 0;
 }
 
 uint32_t millis(void)
@@ -606,12 +621,12 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 				return score;
 			}
 		}//end for(constant mvmt to the right)
-		score += 1;
-		if(score > 5)
+		score += 10;
+		if(score > 30)
 		{
 			j = 4;
 		}
-		else if(score > 10)
+		else if(score > 60)
 		{
 			j = 8;
 		}
