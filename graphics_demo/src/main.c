@@ -31,7 +31,7 @@ void refreshScreen();
 void backdrop();
 
 int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy);
-int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSpuddyX, uint16_t *oldSpuddyY ,uint16_t *oldx, uint16_t *oldy);
+int HungerGame(uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSpuddyX, uint16_t *oldSpuddyY ,uint16_t *oldx, uint16_t *oldy);
 void updateDisplayTime(void);
 void getName(char []);
 void dead(char []);
@@ -121,7 +121,7 @@ int main()
 	initSound();
 	
 	// Set Inital Stage (on startup)
-	stage = 0;
+	stage = -1;
 
 	//background
 	fillRectangle(0,0,128,160,SOILBROWN); 
@@ -215,6 +215,7 @@ int main()
 			// Move Left to play Slug Jump
 			if(movedLeft()==1)
 			{
+				backdrop();
 				stage = 2;
 				refresh = 0;
 			}
@@ -222,6 +223,7 @@ int main()
 			// Move Right to Play Sun Rays Extravaganza
 			if (movedRight()==1)
 			{
+				backdrop();
 				stage = 3;
 				refresh = 0;
 			}
@@ -261,7 +263,7 @@ int main()
 			// Brown Backdrop
 			backdrop();
 		
-			hunger = HungerGame(hunger,&x, &y, &oldSpuddyX, &oldSpuddyY, &oldx, &oldy);
+			hunger = HungerGame(&x, &y, &oldSpuddyX, &oldSpuddyY, &oldx, &oldy);
 
 			stage = 1;
 		} // END STAGE 3
@@ -312,14 +314,14 @@ void dead(char name[])
 int hungerBar(int hngr)
 {
 	hngr = hngr - 1;
-	printDigit(hngr,108,10,0,SOILBROWN);
+	printDigit(hngr,108,10,0,GRASSGREEN);
 	return hngr;
 }
 
 int funBar(int fun2)
 {
-	fun2 = fun2 -1;
-	printDigit(fun2,15,10,0,SOILBROWN);
+	fun2 = fun2 - 1;
+	printDigit(fun2,15,10,0,GRASSGREEN);
 	return fun2;
 }
 
@@ -470,8 +472,8 @@ void updateDisplayTime(void)
 
 		//convert hrs mins and secs to characters and print
 		//printTime(hrs,10,140,0,soilBrown);
-		printTime(mins,53,10,0,SOILBROWN);
-		printTime(secs,68,10,0,SOILBROWN);
+		printTime(mins,53,10,0,GRASSGREEN);
+		printTime(secs,68,10,0,GRASSGREEN);
 	}
 }
 
@@ -560,9 +562,15 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 	}//end if(direction)
 	else
 	{
-		//do nothing
-		putImage(*x,*y,34,40,spudman_D1,0,0);
-		delay(5000);
+		for(int i = 0;i < random_mvmt_duration;i++)
+		{
+			//do nothing, just chilling
+			fillRectangle(*oldx,*oldy,34,40,SOILBROWN); *oldx= *x; *oldy= *y;
+			putImage(*x,*y,34,40,spudman_D1,0,0);
+			delay(50);
+			putImage(*x,*y,34,40,spudman_D2,0,0);
+			delay(50);				
+		}//end if(duration)
 		return 0;
 	}
 	///////////////////////END MVMT IF SEQUENCE/////////////////////////
@@ -575,7 +583,6 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 
 	while(1)
 	{
-		fillRectangle(0,0,128,21,GRASSGREEN);
 		*x = 5;
 		*y = 100;
 		putImage(64,120,18,13,slug_1,0,0);
@@ -595,7 +602,7 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			delay(50);
 
 			//Jump 
-			if (movedUp()==0)  
+			if (movedUp()==1)  
 			{
 				stopNote();
 
@@ -651,10 +658,8 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 	}//end while(1)
 }//end FunGame()
 
-int HungerGame(int hunger, uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSpuddyX, uint16_t *oldSpuddyY ,uint16_t *oldx, uint16_t *oldy)
+int HungerGame(uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSpuddyX, uint16_t *oldSpuddyY ,uint16_t *oldx, uint16_t *oldy)
 {	
-	fillRectangle(0,0,128,21,GRASSGREEN);
-	hunger = 0;
 	srand(time(0));//Seed 
 
 	*spuddyX = 50; //Initialize spuddys spawn location and make the pointer remember its last position 
