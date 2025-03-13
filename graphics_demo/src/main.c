@@ -43,8 +43,6 @@ int movedDown(void);
 int movedLeft(void);
 int movedRight(void);
 
-
-
 volatile uint32_t milliseconds;
 uint32_t my_tune_notes[]={A4,C3,B5,D3,F2};
 uint32_t my_tune_times[]={200,100,300,200,500};
@@ -232,13 +230,13 @@ int main()
 			if (hunger == 0 || fun == 0)
 			{
 				dead(name);
-				fillRectangle(0,0,128,160,soilBrown);
+				fillRectangle(0,0,128,160,SOILBROWN);
 
 				while(movedDown()!=0)
 				{
-					printText("Spuddy has starved",0,60,0,soilBrown);
-					printText("to death",40,70,0,soilBrown);
-					printText("YOU LOSE!",40,80,0,soilBrown);
+					printText("Spuddy has starved",0,60,0,SOILBROWN);
+					printText("to death",40,70,0,SOILBROWN);
+					printText("YOU LOSE!",40,80,0,SOILBROWN);
 					putImage(50,20,32,32,tombstone,0,0);
 				}
 				resetValues(&fun,&hunger);
