@@ -117,7 +117,6 @@ int main()
 	//Gameplay starts:
 	while(1)
 	{
-		updateDisplayTime();
 
 		putImage(96,9,10,10,hungerIcon,0,0);
 		putImage(3,9,10,10,confetti,0,0);
@@ -141,9 +140,6 @@ int main()
 				fillCircle(i,48,7,grassGreen);
 				fillCircle(i,64,7,grassGreen);
 			} // End for
-
-			
-
 
 			// Title
 			printTextX2("Spudman!",5,5,0,skyBlue);
