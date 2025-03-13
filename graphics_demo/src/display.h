@@ -13,3 +13,4 @@ void printNumber(uint16_t Number, uint16_t x, uint16_t y, uint16_t ForeColour, u
 void printNumberX2(uint16_t Number, uint16_t x, uint16_t y, uint16_t ForeColour, uint16_t BackColour);
 uint16_t RGBToWord(uint16_t R, uint16_t G, uint16_t B);
 void printTime(uint16_t num, uint16_t x, uint16_t y, uint16_t ForeColour, uint16_t BackColour);
+void printDigit(uint16_t Number, uint16_t x, uint16_t y, uint16_t ForeColour, uint16_t BackColour);
