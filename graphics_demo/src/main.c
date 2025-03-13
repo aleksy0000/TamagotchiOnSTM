@@ -60,7 +60,7 @@ int main()
 {
 	//save current pet name and alive time
 	char name[11]; //max name 10 characters
-	getName(name);
+	//getName(name);
 
 	// Current Stage
 	int stage = 0;
@@ -147,9 +147,9 @@ int main()
 		else if(stage == 1)
 		{
 			isMoving = mvmt(&x, &y, &oldx, &oldy);
-		fun = funBar(fun);
+			fun = funBar(fun);
 		
-		updateDisplayTime();
+			updateDisplayTime();
 			// Change backdrop
 			//fillRectangle(0,0,128,160,soilBrown);      // Soil
 			
