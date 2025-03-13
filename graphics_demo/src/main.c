@@ -456,12 +456,11 @@ void updateDisplayTime(void)
 int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 {
 	// Movement Variables
-	int isMoving = 0;   // (0=stationary) (1=moving)
 	int random_mvmt;  // (0=down 1=up)  (2=left 3=right) !Default is 0!
 	int random_mvmt_duration;
 	
 	// Movement
-	random_mvmt = 0 + rand() % 4;//randomise direction
+	random_mvmt = 0 + rand() % 5;//randomise direction
 	random_mvmt_duration = 5 + rand() % 10;//randomise duration spent in that direction
 
 	///////////////////////START MVMT IF SEQUENCE/////////////////////////
@@ -480,8 +479,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 				delay(50);				
 			}
 		}//end if(duration)
-		isMoving = 1;
-		return isMoving;
+		return 1;
 	}//end if(direction)
 
 	// Move Up
@@ -499,8 +497,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 				delay(50);
 			}
 		}//end for(duration)
-		isMoving = 1;
-		return isMoving;
+		return 1;
 	}//end for(direction)
 
 	// Move Left
@@ -518,8 +515,7 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 				delay(50);
 			}	
 		}//end if(duration)	
-		isMoving = 1;
-		return isMoving;
+		return 1;
 	}//end if(direction)
 
 	// Move right
@@ -537,15 +533,15 @@ int mvmt(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 				delay(50);
 			}
 		}//end if(duration)		
-		isMoving = 1;
-		return isMoving;		
+		return 1;		
 	}//end if(direction)
-
-	//Did not move(random_mvmt = 4)
 	else
 	{
-		return isMoving;
-	}//end else
+		//do nothing
+		putImage(*x,*y,34,40,spudman_D1,0,0);
+		delay(5000);
+		return 0;
+	}
 	///////////////////////END MVMT IF SEQUENCE/////////////////////////
 }//end mvmt function
 
