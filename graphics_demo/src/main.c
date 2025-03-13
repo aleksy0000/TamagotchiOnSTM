@@ -140,7 +140,7 @@ int main()
 	
 			printText("Enter Name:",0,60,255,0);
 			getName(name);
-			stage = 1;
+			stage = 0;
 		} // End Serial Screen
 
 		// Start Menu
@@ -705,7 +705,8 @@ int HungerGame(uint16_t *spuddyX, uint16_t *spuddyY, uint16_t *oldSpuddyX, uint1
 			fillRectangle(*oldx,*oldy,20,20,SOILBROWN);// clear previous postion of the food and spuddy when they move 
 			fillRectangle(*oldSpuddyX,*oldSpuddyY,34,40,SOILBROWN);
 
-			putImage(foodX,foodY,20,20,sun_2,0,0);//Print new position of spuddy
+			putImage(foodX,foodY,20,20,sun_B1,0,0);//Print sun 1
+			putImage(foodX,foodY,20,20,sun_B2,0,0);//print sun 2
 			putImage(*spuddyX,*spuddyY,34,40,spudman_D1,0,0);
 
 			//Store old food positions
