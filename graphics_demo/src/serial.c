@@ -66,3 +66,12 @@ void printDecimal(int32_t Value)
 	}
 	eputs(DecimalString);
 }
+void eputTime(uint32_t value)
+{
+	char buffer[3];
+	buffer[2] = 0;
+	buffer[1] = value % 10 + '0';
+	value = value / 10;
+	buffer[0] = value % 10 + '0';
+	eputs(buffer);
+}

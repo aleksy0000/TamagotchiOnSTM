@@ -75,8 +75,12 @@ const uint16_t tombstone[] = {11313,11313,11313,11313,11313,11313,11313,11313,11
 
 int main()
 {
+	//serial comms
+	initSerial();
+
 	//save current pet name and alive time
-	char name[11]; //max name 10 characters
+	char name[11] = "Spuddy"; //max name 10 characters, default = "Spuddy"
+	initSerial();
 	//getName(name);
 
 	// Current Stage
@@ -105,9 +109,6 @@ int main()
 	initClock();
 	initSysTick();
 	setupIO();
-
-	//sound
-	initSound();
 	
 	stage = 0;
 	// Change backdrop
@@ -169,7 +170,7 @@ int main()
 		isMoving = mvmt(&x, &y, &oldx, &oldy);
 		fun = funBar(fun);
 		
-		updateDisplayTime();
+			updateDisplayTime();
 			// Change backdrop
 			//fillRectangle(0,0,128,160,soilBrown);      // Soil
 			
@@ -194,14 +195,17 @@ int main()
 			//check if dead
 			if (hunger == 0)
 			{
-				fillRectangle(0,0,128,160,soilBrown);
-				printText("Spuddy has starved",0,60,0,soilBrown);
-				printText("to death",40,70,0,soilBrown);
-				printText("YOU LOSE!",40,80,0,soilBrown);
-				putImage(50,20,32,32,tombstone,0,0);
-				delay(2000);
+				dead(name);
+				while((GPIOB->IDR & (1<<5))!=0)
+				{
+					fillRectangle(0,0,128,160,soilBrown);
+					printText("Spuddy has starved",0,60,0,soilBrown);
+					printText("to death",40,70,0,soilBrown);
+					printText("YOU LOSE!",40,80,0,soilBrown);
+					putImage(50,20,32,32,tombstone,0,0);
+					delay(2000);
 
-				stage = 0;	
+				}
 			}
 		
 		}
@@ -239,29 +243,23 @@ void getName(char name[])
 }
 void dead(char name[])
 {
-	//print name to terminal
-	eputs(name);
-
 	//print time to terminal
-	static uint32_t lastUpdate = 0;
-	uint32_t elapsedTime = millis();
+	uint32_t seconds = (millis() / 1000);
 
-	if(elapsedTime - lastUpdate >= 1000)//update every second
-	{
-		lastUpdate = elapsedTime;
-		static uint32_t seconds = 0;
-		seconds++;
+	//convert to HH:MS:SS format
+	//uint32_t hrs = (seconds / 3600) % 24;
+	uint32_t mins = (seconds / 60) % 60;
+	uint32_t secs = seconds % 60;
 
-		//convert to HH:MS:SS format
-		//uint32_t hrs = (seconds / 3600) % 24;
-		uint32_t mins = (seconds / 60) % 60;
-		uint32_t secs = seconds % 60;
-
-		//convert hrs mins and secs to characters and print
-		//printDecimal(hrs);
-		printDecimal(mins);
-		printDecimal(secs);
-	}
+	//convert hrs mins and secs to characters and print
+	//printDecimal(hrs);
+	eputs("Name: ");
+	eputs(name);
+	eputs("\nTime Alive: ");
+	eputTime(mins);
+	eputs(":");
+	eputTime(secs);
+	
 }
 
 int hungerBar(int hngr)
