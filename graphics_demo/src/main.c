@@ -608,6 +608,8 @@ int FunGame(uint16_t *x, uint16_t *y, uint16_t *oldx, uint16_t *oldy)
 			//Jump 
 			if (movedUp()==1)  
 			{
+				playNote(700);
+				
 				stopNote();
 
 				for(int i = 0; i < 25;i++)
