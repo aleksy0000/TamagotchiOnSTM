@@ -1,6 +1,6 @@
 ## Criteria Guide
 - Code Quality & Comments - 4 examples - 5/4 DONE
-- Gameplay - 4 Examples - 3/4 DONE
+- Gameplay - 4 Examples - 4/4 DONE
 - Use of additonal IO - 3 examples - NOT DONE
 - Use of graphics API functions - 2 examples - 2/2 DONE
 - Sprite Design and animation - 4 examples - 4/4 DONE
