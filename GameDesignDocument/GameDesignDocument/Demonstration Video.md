@@ -21,7 +21,8 @@ Enough talking, lets boot up the game.
 
 ## Boot Game - Serial Comms Example 1, Graphics API Example 1, Main Menu Example 1, Sprite Design and Animation Example 1.
 **Serial Comms Example 1/2**
-When you boot up the game, you are met with a black screen with the words "enter name:", This is your cue to name your pet potato using the keyboard and terminal through **Serial Communications** between the microcontroller and PC.
+- When you boot up the game, you are met with a black screen with the words "enter name:", This is your cue to name your pet potato using the keyboard and terminal through **Serial Communications** between the 
+microcontroller and PC.
 
 We will give it the name "spuddy" for this demonstration.
 
