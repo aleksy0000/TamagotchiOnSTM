@@ -12,6 +12,6 @@
 | Use of random numbers                    | 1 Points (1/1/0/0) | **YES**     |
 | Multiplayer or other novel feature       | 1 Points (1/1/0/0) | n/a         |
 | Use of serial port (I/O)                 | 4 Points (4/3/2/1) | **YES**  |
-| Use of sound                             | 2 Points (2/1/0/0) | WIP         |
+| Use of sound                             | 2 Points (2/1/0/0) | **YES**       |
 | Demonstration video                      | 4 Points (4/3/2/1) | n/az        |
 gpiob 3
