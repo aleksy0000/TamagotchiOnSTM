@@ -1,16 +1,16 @@
 ## Criteria Guide
-Code Quality & Comments - 4 examples
-Gameplay - 4 Examples |||
-Use of additonal IO - 3 examples
-Use of graphics API functions - 2 examples |
-Sprite Design and animation - 4 examples
-HUD - 1 Example | done
-Main Menu - 1 example | done
-Ability to restart - 1 example | done
-Use of random numbers 1 example | done
-Novel feature - 1 example
-Use of serial port - 2 examples || done
-use of sound - 2 examples || done
+- Code Quality & Comments - 4 examples - 0/4 NOT DONE
+- Gameplay - 4 Examples - 3/4 NOT DONE
+- Use of additonal IO - 3 examples - NOT DONE
+- Use of graphics API functions - 2 examples - 2/2 DONE
+- Sprite Design and animation - 4 examples - 4/4 DONE
+- HUD - 1 Example - 1/1 DONE
+- Main Menu - 1 example - 1/1 DONE
+- Ability to restart - 1 example - 1/1 DONE
+- Use of random numbers 1 example - 1/1 DONE
+- Novel feature - 1 example - NOT DONE
+- Use of serial port - 2 examples - 2/2 DONE
+- use of sound - 2 examples - 2/2 DONE
 
 ## Introduction
 Spudman is a game inspired by the classic Tamagotchi. The main goal of Spudman is to keep your pet potato alive as long as possible. 
@@ -51,7 +51,7 @@ Lets press start
 - Random numbers were used to determine the direction, and how far it is going to walk. 
 - {Show code for movement, and explain}
 
-**Gameplay Example 1/4**
+**Gameplay Example 1/4 & HUD Example 1/1**
 - The aim of the game is to keep him alive and happy for as long as possible.
 - You can see your score/time here {point to middle}
 - Now, to take care of Spudman, have have to keep him happy and full. You can see his health bar here, {point to top left}, and his fun bar here {point to top right}
