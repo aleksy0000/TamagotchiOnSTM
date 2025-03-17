@@ -1,5 +1,5 @@
 ## Criteria Guide
-- Code Quality & Comments - 4 examples - 0/4 NOT DONE
+- Code Quality & Comments - 4 examples - 5/4 DONE
 - Gameplay - 4 Examples - 3/4 NOT DONE
 - Use of additonal IO - 3 examples - NOT DONE
 - Use of graphics API functions - 2 examples - 2/2 DONE
@@ -22,13 +22,13 @@ Enough talking, lets boot up the game.
 ## Boot Game - Serial Comms Example 1, Graphics API Example 1, Main Menu Example 1, Sprite Design and Animation Example 1.
 **Serial Comms Example 1/2**
 - When you boot up the game, you are met with a black screen with the words "enter name:", This is your cue to name your pet potato using the keyboard and terminal through **Serial Communications** between the 
-microcontroller and PC.
+microcontroller and PC. The code for this will be explained later in the demonstration.
 - We will give it the name "spuddy" for this demonstration.
 
 **Graphics API Example 1/2 & Main Menu Example 1/1**
 - After you have entered the name, and pressed enter, you are met with the main menu. A great example of graphics API functions at their best in Spudman. A clever workaround the memory limitations of this platform. The **graphics API functions** allowed use to fill out the screen with great visuals, something that would be impossible without the graphics API as an image large enough to fill the screen would amount to 40Kb of memory, 8Kb over this microcontrollers 32Kb limit.  
 
-**Sprite Design and Animation example 1/4**
+**Sprite Design and Animation example 1/4 & Code Quality & Comments 1/4**
 - Now for greater detail into the code.
 - {Show code for start menu, and explain}
 - I was able to create this menu, using only coloured rectangles for the soil and sky, and circles for the bumpy grass.
@@ -48,7 +48,8 @@ Lets press start
 - As you can see, Spudman is joyfully prancing around the soil with a smooth animation and carefully though out sprite design.
 
 **Random Numbers Example 1/1**
-- Random numbers were used to determine the direction, and how far it is going to walk. 
+- Random numbers were used to determine the direction, and how far it is going to walk.
+**Code Quality & Comments 2/4**
 - {Show code for movement, and explain}
 
 **Gameplay Example 1/4 & HUD Example 1/1**
@@ -72,6 +73,9 @@ Lets press start
 **Use of Sound Example 2/2**
 - Moving Spudman left or right, plays a sound for a truly tactile IO experience.
 
+**Code Quality & Comments 3/4**
+- {show code and explain the hunger game)
+
 ## Fun Game  - Gameplay Example 3, Sprite Design & Animation Example 3.
 **Gameplay Example 3/4**
 - It seems the Spudmans fun meter has fallen considerably, We must keep it up to keep him alive.
@@ -82,12 +86,18 @@ Lets press start
 - For each slug you successfully jump over, we are rewarded points towards his fun bar.
 - If Spudman hits a slug, then the mini game ends.
 
+**Code Quality & Comments 4/4**
+- {Show code and explain the slug jump game)
+
 ## Serial Output - Serial Comms Example 2/2
 What happens when the worst comes to worst and Spudman dies? Are you expected to keep note of your time alive?
 
 Ofcourse not, When Spudman eventually dies, the custom name and time alive is printed to terminal. So that you can easily keep track of all your attempts.
 
-## Restart - Ability to restart Example 1/1
+**Code Quality & Comments 5/4** 
+- {Show code and explain serial in and out)
+
+## Restart - Ability to restart Example 1/1 - Gameplay Example 4/4(cause like the gameplay loop bro)
 Now that we have finished grieving our pet, we can swiftly replace it with a new one.
 
 With the press of a button, we can restart and continue playing!
